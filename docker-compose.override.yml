@@ -1,0 +1,10 @@
+# Development overrides: applied automatically by `docker compose up`.
+services:
+  web:
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+    volumes:
+      - .:/app
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
