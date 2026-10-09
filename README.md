@@ -1,5 +1,8 @@
 # MapleMetrics
 
+![CI](https://github.com/omarfaruqe/maplemetrics/actions/workflows/ci.yml/badge.svg)
+
+
 Canadian economic and market intelligence: a containerized platform that ingests Canadian public
 data (Statistics Canada, Bank of Canada, CMHC), models it in a warehouse, forecasts key
 indicators, and serves dashboards and an API through Django.
