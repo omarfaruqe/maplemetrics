@@ -99,7 +99,7 @@ STATCAN_MEASURES: tuple[StatCanMeasure, ...] = (
         table_id="20100056",
         value_filters=(
             ("North American Industry Classification System (NAICS)", "Retail trade [44-45]"),
-            ("Sales", "Retail sales"),
+            ("Sales", "Total retail sales"),
             ("Adjustments", "Seasonally adjusted"),
         ),
     ),
