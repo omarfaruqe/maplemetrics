@@ -1,0 +1,140 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% trans "Canadian economy dashboard" %} · MapleMetrics</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f9f9f7; --surface: #fcfcfb; --fg: #0b0b0b; --muted: #52514e; --faint: #898781;
+      --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10);
+      --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+      --negative: #e34948; --emphasis: #184f95;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:where(:not([data-theme="light"])) {
+        color-scheme: dark;
+        --bg: #0d0d0d; --surface: #1a1a19; --fg: #f0efec; --muted: #c3c2b7; --faint: #898781;
+        --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+        --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+        --negative: #e66767; --emphasis: #86b6ef;
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d0d0d; --surface: #1a1a19; --fg: #f0efec; --muted: #c3c2b7; --faint: #898781;
+      --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+      --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+      --negative: #e66767; --emphasis: #86b6ef;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg);
+           font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 24px 16px 56px; }
+    h1 { margin: 0 0 4px; font-size: 1.6rem; }
+    h2 { margin: 0 0 4px; font-size: 1.15rem; }
+    .lead, .note { color: var(--muted); margin: 0 0 16px; max-width: 70ch; }
+    .note { font-size: 0.9rem; margin: 8px 0 0; }
+    .tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+             margin: 20px 0 24px; padding: 0; list-style: none; }
+    .tile, .card { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; }
+    .tile { padding: 14px 16px; }
+    .tile .name { color: var(--muted); font-size: 0.85rem; }
+    .tile .value { font-size: 2rem; font-weight: 600; line-height: 1.2; }
+    .tile .when { color: var(--faint); font-size: 0.8rem; }
+    .card { padding: 16px; margin-bottom: 20px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0; padding: 0;
+              list-style: none; color: var(--muted); font-size: 0.9rem; }
+    .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px;
+                margin-right: 6px; vertical-align: middle; }
+    .chart { width: 100%; min-width: 600px; height: auto; display: block; overflow: visible; }
+    .chart .grid { stroke: var(--grid); stroke-width: 1; }
+    .chart .axis { stroke: var(--axis); stroke-width: 1; }
+    .chart .tick { fill: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .chart .label { fill: var(--muted); font-size: 12px; }
+    .chart .label.strong { fill: var(--fg); font-weight: 600; }
+    .chart .value { fill: var(--fg); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+    .chart .dot { stroke: var(--surface); stroke-width: 2; }
+    .chart .hit { fill: transparent; }
+    .chart .hit:hover { fill: var(--faint); fill-opacity: 0.35; }
+    details { margin-top: 12px; }
+    summary { cursor: pointer; color: var(--muted); font-size: 0.9rem; }
+    .scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 8px; }
+    th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--grid); }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    nav { margin-top: 24px; font-size: 0.9rem; }
+    a { color: var(--series-1); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>{% trans "Canadian economy dashboard" %}</h1>
+    <p class="lead">{% trans "Interest rates, inflation, jobs and retail, from the Bank of Canada and Statistics Canada." %}</p>
+
+    {% if not has_data %}
+      <p class="card">{% trans "No data loaded yet. Run the ingest commands first." %}</p>
+    {% else %}
+    <ul class="tiles">
+      {% for name, value, when in tiles %}
+      <li class="tile"><div class="name">{{ name }}</div><div class="value">{{ value }}</div><div class="when">{{ when }}</div></li>
+      {% endfor %}
+    </ul>
+
+    {% if rates %}
+    <section class="card">
+      <h2>{% trans "Policy rate, core inflation and the real rate" %}</h2>
+      <p class="note">{% trans "Real rate = policy rate at month end minus CPI-trim. Below zero, monetary policy is stimulating." %}</p>
+      <ul class="legend">
+        <li><i style="background:var(--series-1)"></i>{% trans "Policy rate" %}</li>
+        <li><i style="background:var(--series-2)"></i>{% trans "Core inflation" %}</li>
+        <li><i style="background:var(--series-3)"></i>{% trans "Real rate" %}</li>
+      </ul>
+      <div class="scroll">{{ rate_chart }}</div>
+      <details>
+        <summary>{% trans "View as table (last 24 months)" %}</summary>
+        <div class="scroll"><table>
+          <thead><tr><th>{% trans "Month" %}</th><th class="num">{% trans "Policy rate" %}</th><th class="num">{% trans "Core inflation" %}</th><th class="num">{% trans "Real rate" %}</th></tr></thead>
+          <tbody>{% for p in rates %}<tr><td>{{ p.date|date:"Y-m" }}</td><td class="num">{{ p.policy|floatformat:2 }}</td><td class="num">{{ p.core|floatformat:2 }}</td><td class="num">{{ p.real|floatformat:2 }}</td></tr>{% endfor %}</tbody>
+        </table></div>
+      </details>
+    </section>
+    {% endif %}
+
+    {% if unemployment %}
+    <section class="card">
+      <h2>{% trans "Unemployment rate by province" %}</h2>
+      <p class="note">{% trans "Latest month, seasonally adjusted, 15 years and over. Canada is highlighted." %}</p>
+      <div class="scroll">{{ unemployment_chart }}</div>
+      <details>
+        <summary>{% trans "View as table" %}</summary>
+        <div class="scroll"><table>
+          <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Rate (%)" %}</th><th class="num">{% trans "12 months earlier" %}</th><th class="num">{% trans "Change (pts)" %}</th></tr></thead>
+          <tbody>{% for r in unemployment %}<tr><td>{{ r.geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
+        </table></div>
+      </details>
+    </section>
+    {% endif %}
+
+    {% if retail %}
+    <section class="card">
+      <h2>{% trans "Real retail sales growth by province" %}</h2>
+      <p class="note">{% trans "Year over year: nominal retail sales growth deflated by the consumer price index. Red bars are declines." %}</p>
+      <div class="scroll">{{ retail_chart }}</div>
+      <details>
+        <summary>{% trans "View as table" %}</summary>
+        <div class="scroll"><table>
+          <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Sales (%)" %}</th><th class="num">{% trans "Prices (%)" %}</th><th class="num">{% trans "Real (%)" %}</th></tr></thead>
+          <tbody>{% for r in retail %}<tr><td>{{ r.geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
+        </table></div>
+      </details>
+    </section>
+    {% endif %}
+    {% endif %}
+
+    <nav><a href="{% url 'core:freshness' %}">{% trans "Data freshness" %}</a></nav>
+  </main>
+</body>
+</html>
