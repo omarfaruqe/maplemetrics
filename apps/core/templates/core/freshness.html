@@ -1,0 +1,88 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% trans "Data freshness" %} · MapleMetrics</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff; --fg: #1a1d21; --muted: #596270; --line: #d8dce2;
+      --ok: #14683b; --warn: #8f5200; --bad: #a3262a;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14161a; --fg: #e8eaee; --muted: #a3abb8; --line: #2f343c;
+        --ok: #5fd093; --warn: #f0b24a; --bad: #ff8a8d;
+      }
+    }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; }
+    .lead { margin: 0 0 24px; color: var(--muted); max-width: 70ch; }
+    .scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    thead th { font-weight: 600; color: var(--muted); font-size: 0.85rem; }
+    tbody th { font-weight: 500; white-space: normal; min-width: 16rem; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .code { display: block; color: var(--muted); font: 0.8rem ui-monospace, monospace; }
+    .badge { font-weight: 600; }
+    .badge.fresh { color: var(--ok); }
+    .badge.stale { color: var(--bad); }
+    .badge.empty { color: var(--warn); }
+    .badge.fresh::before { content: "\2713\00a0"; }
+    .badge.stale::before { content: "!\00a0"; }
+    .badge.empty::before { content: "\2013\00a0"; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>{% trans "Data freshness" %}</h1>
+    <p class="lead">
+      {% blocktrans with day=today|date:"Y-m-d" %}How recent each indicator is, as of {{ day }}. "Days behind" counts from the oldest geography's latest data point, so one lagging province shows up here.{% endblocktrans %}
+    </p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{% trans "Indicator" %}</th>
+            <th scope="col">{% trans "Source" %}</th>
+            <th scope="col">{% trans "Frequency" %}</th>
+            <th scope="col" class="num">{% trans "Geographies" %}</th>
+            <th scope="col" class="num">{% trans "Observations" %}</th>
+            <th scope="col">{% trans "Newest" %}</th>
+            <th scope="col">{% trans "Oldest latest" %}</th>
+            <th scope="col" class="num">{% trans "Days behind" %}</th>
+            <th scope="col">{% trans "Status" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <th scope="row">
+              {% if LANGUAGE_CODE|slice:":2" == "fr" %}{{ row.name_fr }}{% else %}{{ row.name_en }}{% endif %}
+              <span class="code">{{ row.code }}</span>
+            </th>
+            <td>{{ row.source_label }}</td>
+            <td>{{ row.frequency_label }}</td>
+            <td class="num">{{ row.geographies }}</td>
+            <td class="num">{{ row.observations }}</td>
+            <td>{{ row.newest|date:"Y-m-d"|default:"–" }}</td>
+            <td>{{ row.oldest_latest|date:"Y-m-d"|default:"–" }}</td>
+            <td class="num">{{ row.days_behind|default_if_none:"–" }}</td>
+            <td>
+              <span class="badge {{ row.status }}">
+                {% if row.status == "fresh" %}{% trans "Fresh" %}{% elif row.status == "stale" %}{% trans "Stale" %}{% else %}{% trans "No data" %}{% endif %}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9">{% trans "No data loaded yet. Run the ingest commands first." %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
