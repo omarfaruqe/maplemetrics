@@ -5,6 +5,8 @@ from django.utils.translation import gettext as _
 from . import kpis
 from .charts import Bar, Line, bar_chart, line_chart
 
+HISTORY_MONTHS = 120
+
 
 def dashboard(request: HttpRequest) -> HttpResponse:
     """Headline indicators with the charts behind them."""
@@ -89,5 +91,73 @@ def dashboard(request: HttpRequest) -> HttpResponse:
         "retail": retail,
         "retail_chart": retail_chart,
         "has_data": bool(rates or unemployment or retail),
+        "active": "dashboard",
     }
     return render(request, "analytics/dashboard.html", context)
+
+
+def _tile(name: str, geo: str, geo_points, canada_points) -> tuple[str, str, str] | None:
+    """A tile with the province's latest value and its gap to Canada in the same month."""
+    if not geo_points:
+        return None
+    day, value = geo_points[-1]
+    note = f"{day:%Y-%m}"
+    canada = dict(canada_points).get(day)
+    if geo != kpis.NATIONAL and canada is not None:
+        note += " \u00b7 " + _("%(diff)s pts vs Canada") % {"diff": f"{value - canada:+.1f}"}
+    return name, f"{value:.1f}%", note
+
+
+def provinces(request: HttpRequest) -> HttpResponse:
+    """One province against Canada: unemployment, inflation and real retail growth."""
+    options = kpis.geographies()
+    fallback = "Quebec" if "Quebec" in options else (options[-1] if options else "")
+    asked = request.GET.get("geo", "")
+    geo = asked if asked in options else fallback
+
+    panels = []
+    tiles = []
+    if geo:
+        sources = [
+            (
+                _("Unemployment rate"),
+                lambda g: kpis.series(kpis.UNEMPLOYMENT, g),
+                _("Seasonally adjusted, 15 years and over."),
+            ),
+            (
+                _("Inflation (CPI, year over year)"),
+                lambda g: kpis.yoy_series(kpis.CPI_INDEX, g),
+                _("Change in the all-items consumer price index over twelve months."),
+            ),
+            (
+                _("Real retail sales growth (year over year)"),
+                kpis.real_retail_yoy,
+                _("Retail sales growth over twelve months, deflated by CPI."),
+            ),
+        ]
+        for title, getter, note in sources:
+            geo_points = getter(geo)
+            canada_points = getter(kpis.NATIONAL)
+            lines = [Line(geo, "--series-1", geo_points[-HISTORY_MONTHS:])]
+            if geo != kpis.NATIONAL:
+                lines.append(Line("Canada", "--context", canada_points[-HISTORY_MONTHS:]))
+            tile = _tile(title, geo, geo_points, canada_points)
+            if tile:
+                tiles.append(tile)
+            panels.append(
+                {
+                    "title": title,
+                    "note": note,
+                    "chart": line_chart(lines),
+                    "has_data": bool(geo_points),
+                    "compare": geo != kpis.NATIONAL,
+                }
+            )
+    context = {
+        "options": options,
+        "geo": geo,
+        "tiles": tiles,
+        "panels": panels,
+        "active": "provinces",
+    }
+    return render(request, "analytics/provinces.html", context)

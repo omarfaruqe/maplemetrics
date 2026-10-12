@@ -49,6 +49,15 @@ def _fmt(value: float, decimals: int = 1) -> str:
     return f"{value:.{decimals}f}".replace("-", "\u2212")
 
 
+def spread_labels(positions: list[float], gap: float = 15.0) -> list[float]:
+    """Nudge label y positions apart so none are closer than ``gap``; order is preserved."""
+    order = sorted(range(len(positions)), key=lambda i: positions[i])
+    placed = list(positions)
+    for previous, current in zip(order, order[1:], strict=False):
+        placed[current] = max(placed[current], placed[previous] + gap)
+    return placed
+
+
 def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int = 340) -> str:
     """A multi-series line chart on a single y axis with a zero line, year ticks and end labels."""
     left, right, top, bottom = 44, 120, 12, 28
@@ -88,9 +97,15 @@ def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int
         parts.append(
             f'<text x="{px:.1f}" y="{height - 8}" text-anchor="middle" class="tick">{year}</text>'
         )
-    for line in lines:
-        if not line.points:
-            continue
+    drawn = [line for line in lines if line.points]
+    label_ys = dict(
+        zip(
+            (line.name for line in drawn),
+            spread_labels([y(line.points[-1][1]) for line in drawn]),
+            strict=True,
+        )
+    )
+    for line in drawn:
         path = " ".join(
             f"{'M' if i == 0 else 'L'}{x(day):.1f},{y(value):.1f}"
             for i, (day, value) in enumerate(line.points)
@@ -100,7 +115,8 @@ def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int
         parts.append(
             f'<circle cx="{x(last_day):.1f}" cy="{y(last_value):.1f}" r="4" class="dot" '
             f'style="fill:var({line.color})"/>'
-            f'<text x="{x(last_day) + 10:.1f}" y="{y(last_value) + 4:.1f}" class="label">'
+            # f'<text x="{x(last_day) + 10:.1f}" y="{y(last_value) + 4:.1f}" class="label">'
+            f'<text x="{x(last_day) + 10:.1f}" y="{label_ys[line.name] + 4:.1f}" class="label">'
             f"{escape(line.name)} {_fmt(last_value)}{unit}</text>"
         )
         for day, value in line.points:

@@ -133,3 +133,39 @@ def real_retail_growth() -> list[RetailRow]:
         )
     rows.sort(key=lambda row: (-row.real, row.geography))
     return rows
+
+
+def geographies(code: str = UNEMPLOYMENT) -> list[str]:
+    """Geographies that have data for ``code``, Canada first and the rest alphabetical."""
+    names = (
+        Observation.objects.filter(indicator__code=code)
+        .values_list("geography", flat=True)
+        .distinct()
+    )
+    return sorted(set(names), key=lambda name: (name != NATIONAL, name))
+
+
+def _year_over_year(code: str, geography: str) -> list[tuple[date, float]]:
+    values = dict(series(code, geography))
+    points = []
+    for day in sorted(values):
+        before = values.get(add_months(day, -12))
+        if before:
+            points.append((day, (values[day] / before - 1) * 100))
+    return points
+
+
+def yoy_series(code: str, geography: str = NATIONAL) -> list[tuple[date, float]]:
+    """Year-over-year percent change of an index or level, for months with a year-earlier value."""
+    return [(day, round(value, 2)) for day, value in _year_over_year(code, geography)]
+
+
+def real_retail_yoy(geography: str = NATIONAL) -> list[tuple[date, float]]:
+    """Retail sales growth over twelve months minus price growth, as a real percent change."""
+    inflation = dict(_year_over_year(CPI_INDEX, geography))
+    points = []
+    for day, nominal in _year_over_year(RETAIL_SALES, geography):
+        if day in inflation:
+            real = ((1 + nominal / 100) / (1 + inflation[day] / 100) - 1) * 100
+            points.append((day, round(real, 2)))
+    return points

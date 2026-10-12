@@ -51,3 +51,21 @@ def test_real_retail_growth_deflates_by_cpi(economy):
     assert quebec.inflation == pytest.approx(5.0)
     assert quebec.real < -2.8
     assert [r.geography for r in kpis.real_retail_growth()] == ["Canada", "Quebec"]
+
+
+def test_geographies_put_canada_first(economy):
+    assert kpis.geographies() == ["Canada", "Ontario", "Quebec"]
+    assert kpis.geographies("NOPE") == []
+
+
+def test_year_over_year_needs_a_value_twelve_months_earlier(economy):
+    assert kpis.yoy_series("CPI_ALL_ITEMS", "Canada") == [(date(2026, 7, 1), 3.0)]
+    assert kpis.yoy_series("CPI_ALL_ITEMS", "Ontario") == []
+    assert kpis.yoy_series("CPI_ALL_ITEMS", "Nowhere") == []
+
+
+def test_real_retail_yoy_matches_the_snapshot_calculation(economy):
+    assert kpis.real_retail_yoy("Canada") == [(date(2026, 7, 1), pytest.approx(0.97, abs=0.01))]
+    quebec = kpis.real_retail_yoy("Quebec")
+    assert quebec[0][1] == pytest.approx(-2.86, abs=0.01)
+    assert kpis.real_retail_yoy("Ontario") == []
