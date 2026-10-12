@@ -39,7 +39,7 @@ def backtest(
     horizon: int = 12,
     count: int = 12,
     step: int = 3,
-    min_train: int = 96,
+    min_train: int = 60,
     max_train: int = 240,
     log: bool = False,
 ) -> list[MethodScore]:
@@ -51,7 +51,10 @@ def backtest(
     methods = METHODS if methods is None else methods
     values = np.asarray(values, dtype=float)
     points = origins(len(values), horizon, count, step, min_train)
-    scale = float(np.mean(np.abs(np.diff(values[: points[0]]))))
+    # The error scale comes from the same recent window the models train on, so a long, very
+    # different history (CPI in 1914 versus today) cannot distort the comparison.
+    first = points[0]
+    scale = float(np.mean(np.abs(np.diff(values[max(0, first - max_train) : first]))))
     if scale == 0:
         scale = np.finfo(float).eps
 

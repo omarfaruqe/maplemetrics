@@ -100,3 +100,12 @@ def test_log_transform_is_applied_to_models_but_errors_use_original_units():
     (score,) = backtest(values, {"spy": spy}, horizon=3, count=2, step=1, min_train=50, log=True)
     assert seen[0] == pytest.approx(np.log(100.0))
     assert score.mae[0] == pytest.approx(0, abs=1e-9)
+
+
+def test_error_scale_comes_from_the_recent_window_not_the_whole_history():
+    values = np.concatenate([np.arange(100) * 0.1, 10 + np.arange(1, 101, dtype=float)])
+    (score,) = backtest(
+        values, {"naive": naive}, horizon=3, count=1, step=1, min_train=50, max_train=50
+    )
+    assert score.mae == pytest.approx([1.0, 2.0, 3.0])
+    assert score.mase == pytest.approx(2.0)
