@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -17,6 +17,7 @@ class MethodScore:
     mae: list[float]  # mean absolute error at horizon 1..H
     rmse: list[float]
     mase: float  # mean absolute error over all horizons / naive one-step error (below 1 beats it)
+    errors: list[list[float]] = field(default_factory=list)  # forecast - actual, origin x horizon
 
 
 def origins(length: int, horizon: int, count: int, step: int, min_train: int) -> list[int]:
@@ -83,6 +84,16 @@ def backtest(
         else:
             mae = rmse = np.full(horizon, np.nan)
             mase = float("nan")
-        scores.append(MethodScore(name, int(ok.sum()), failures, mae.tolist(), rmse.tolist(), mase))
+        scores.append(
+            MethodScore(
+                name,
+                int(ok.sum()),
+                failures,
+                mae.tolist(),
+                rmse.tolist(),
+                mase,
+                errors[ok].tolist(),
+            )
+        )
     scores.sort(key=lambda s: (np.isnan(s.mase), s.mase))
     return scores

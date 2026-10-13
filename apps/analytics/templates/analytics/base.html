@@ -79,6 +79,7 @@
     <nav class="topnav" aria-label="{% trans 'Sections' %}">
       <a href="{% url 'analytics:dashboard' %}"{% if active == 'dashboard' %} aria-current="page"{% endif %}>{% trans "Dashboard" %}</a>
       <a href="{% url 'analytics:provinces' %}"{% if active == 'provinces' %} aria-current="page"{% endif %}>{% trans "Provinces" %}</a>
+      <a href="{% url 'forecasting:forecasts' %}"{% if active == 'forecasts' %} aria-current="page"{% endif %}>{% trans "Forecasts" %}</a>
       <a href="{% url 'core:freshness' %}">{% trans "Data freshness" %}</a>
     </nav>
     {% block content %}{% endblock %}

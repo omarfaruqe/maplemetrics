@@ -14,12 +14,13 @@ from apps.analytics import kpis
 class Target:
     code: str
     log: bool  # model the logarithm: for positive levels that grow proportionally
+    method: str  # the forecasting method chosen from the backtests (see methods.METHODS)
 
 
 TARGETS: dict[str, Target] = {
-    kpis.UNEMPLOYMENT: Target(kpis.UNEMPLOYMENT, log=False),
-    kpis.RETAIL_SALES: Target(kpis.RETAIL_SALES, log=True),
-    kpis.CPI_INDEX: Target(kpis.CPI_INDEX, log=True),
+    kpis.UNEMPLOYMENT: Target(kpis.UNEMPLOYMENT, log=False, method="ets"),
+    kpis.RETAIL_SALES: Target(kpis.RETAIL_SALES, log=True, method="ets"),
+    kpis.CPI_INDEX: Target(kpis.CPI_INDEX, log=True, method="drift"),
 }
 
 
