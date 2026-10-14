@@ -1,15 +1,14 @@
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.utils.translation import gettext as _
 
 from apps.warehouse.freshness import freshness_report
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Landing page placeholder; dashboards arrive in Sprint 2."""
-    return HttpResponse(_("MapleMetrics: Canadian economic and market intelligence"))
+    """The dashboard is the front page."""
+    return redirect("analytics:dashboard")
 
 
 def health(request: HttpRequest) -> JsonResponse:

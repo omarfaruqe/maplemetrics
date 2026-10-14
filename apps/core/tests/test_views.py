@@ -20,10 +20,10 @@ def test_health_endpoint_reports_degraded_when_database_is_down(client):
     assert response.json() == {"status": "degraded", "database": False}
 
 
-def test_home_page_renders_in_english(client):
+def test_home_redirects_to_the_dashboard(client):
     response = client.get(reverse("core:home"))
-    assert response.status_code == 200
-    assert b"MapleMetrics" in response.content
+    assert response.status_code == 302
+    assert response["Location"] == reverse("analytics:dashboard")
 
 
 def test_admin_login_page_is_reachable(client):
