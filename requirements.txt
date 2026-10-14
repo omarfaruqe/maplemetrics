@@ -5,3 +5,5 @@ redis>=5.0
 requests>=2.32
 numpy>=1.26
 statsmodels>=0.14.2
+djangorestframework>=3.15
+drf-spectacular>=0.27
