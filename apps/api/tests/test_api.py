@@ -119,3 +119,28 @@ def test_schema_is_generated(client, economy):  # noqa: F811
 
 def test_docs_page_loads(client):
     assert client.get(reverse("api:docs")).status_code == 200
+
+
+def test_successful_responses_are_cacheable_and_vary_by_language(client, economy):  # noqa: F811
+    response = get(client, "indicator-list")
+    assert "max-age=300" in response["Cache-Control"]
+    assert "public" in response["Cache-Control"]
+    assert "Accept-Language" in response["Vary"]
+
+
+def test_errors_are_not_marked_cacheable(client, economy):  # noqa: F811
+    response = get(client, "observation-list", start="yesterday")
+    assert response.status_code == 400
+    assert "max-age" not in response.get("Cache-Control", "")
+
+
+def test_caching_can_be_switched_off(client, economy, settings):  # noqa: F811
+    settings.API_CACHE_SECONDS = 0
+    assert "max-age" not in get(client, "indicator-list").get("Cache-Control", "")
+
+
+def test_clients_are_rate_limited(client, economy, settings):  # noqa: F811
+    settings.API_THROTTLE_RATE = "3/min"
+    statuses = [get(client, "indicator-list").status_code for _ in range(5)]
+    assert statuses == [200, 200, 200, 429, 429]
+    assert "Retry-After" in get(client, "indicator-list")

@@ -1,6 +1,8 @@
 from datetime import date
 
+from django.conf import settings
 from django.db.models import Count, Max, Min
+from django.utils.cache import patch_cache_control, patch_vary_headers
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
@@ -9,6 +11,17 @@ from apps.forecasting.models import Forecast
 from apps.warehouse.models import Indicator, Observation
 
 from .serializers import ForecastSerializer, IndicatorSerializer, ObservationSerializer
+
+
+class PublicReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
+    """Read-only endpoints whose successful responses browsers and proxies may cache briefly."""
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super().finalize_response(request, response, *args, **kwargs)
+        if response.status_code == 200 and settings.API_CACHE_SECONDS > 0:
+            patch_cache_control(response, public=True, max_age=settings.API_CACHE_SECONDS)
+            patch_vary_headers(response, ["Accept-Language"])
+        return response
 
 
 def _text(name: str, description: str) -> OpenApiParameter:
@@ -26,7 +39,7 @@ def _parse_date(raw: str, name: str) -> date:
     list=extend_schema(summary="List indicators", tags=["indicators"]),
     retrieve=extend_schema(summary="One indicator, by code", tags=["indicators"]),
 )
-class IndicatorViewSet(viewsets.ReadOnlyModelViewSet):
+class IndicatorViewSet(PublicReadOnlyViewSet):
     serializer_class = IndicatorSerializer
     lookup_field = "code"
     lookup_value_regex = "[^/]+"
@@ -49,7 +62,7 @@ class IndicatorViewSet(viewsets.ReadOnlyModelViewSet):
         ],
     )
 )
-class ObservationViewSet(viewsets.ReadOnlyModelViewSet):
+class ObservationViewSet(PublicReadOnlyViewSet):
     serializer_class = ObservationSerializer
     http_method_names = ["get", "head", "options"]
 
@@ -80,7 +93,7 @@ class ObservationViewSet(viewsets.ReadOnlyModelViewSet):
     ),
     retrieve=extend_schema(summary="One forecast with its monthly points", tags=["forecasts"]),
 )
-class ForecastViewSet(viewsets.ReadOnlyModelViewSet):
+class ForecastViewSet(PublicReadOnlyViewSet):
     serializer_class = ForecastSerializer
 
     def get_queryset(self):

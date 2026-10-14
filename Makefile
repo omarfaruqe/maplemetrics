@@ -1,4 +1,4 @@
-.PHONY: up down test lint fmt
+.PHONY: up down test lint fmt refresh
 
 up:
 	cp -n .env.example .env || true
@@ -15,3 +15,6 @@ lint:
 
 fmt:
 	ruff check --fix . && ruff format .
+
+refresh:
+	docker compose run --rm --build refresh

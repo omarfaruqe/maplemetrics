@@ -104,6 +104,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+API_THROTTLE_RATE = env("API_THROTTLE_RATE", "120/min")
+API_CACHE_SECONDS = int(env("API_CACHE_SECONDS", "300"))
+
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
@@ -111,6 +114,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
     "DEFAULT_PAGINATION_CLASS": "apps.api.pagination.StandardPagination",
     "PAGE_SIZE": 100,
+    "DEFAULT_THROTTLE_CLASSES": ["apps.api.throttling.AnonymousRateThrottle"],
     "COERCE_DECIMAL_TO_STRING": False,
     "UNAUTHENTICATED_USER": None,
 }
