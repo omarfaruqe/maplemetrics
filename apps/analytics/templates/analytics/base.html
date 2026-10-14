@@ -67,8 +67,11 @@
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     nav { margin-top: 24px; font-size: 0.9rem; }
     a { color: var(--series-1); }
-    .topnav { display: flex; gap: 16px; margin: 0 0 16px; font-size: 0.9rem; }
+    .topnav { display: flex; align-items: center; gap: 16px; margin: 0 0 16px; font-size: 0.9rem; }
     .topnav a[aria-current="page"] { color: var(--fg); font-weight: 600; text-decoration: none; }
+    .lang { margin-left: auto; }
+    .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--series-1);
+                   text-decoration: underline; cursor: pointer; }
     .picker { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0 20px; }
     .picker select, .picker button { font: inherit; padding: 6px 10px; border-radius: 8px;
       border: 1px solid var(--axis); background: var(--surface); color: var(--fg); }
@@ -81,6 +84,10 @@
       <a href="{% url 'analytics:provinces' %}"{% if active == 'provinces' %} aria-current="page"{% endif %}>{% trans "Provinces" %}</a>
       <a href="{% url 'forecasting:forecasts' %}"{% if active == 'forecasts' %} aria-current="page"{% endif %}>{% trans "Forecasts" %}</a>
       <a href="{% url 'core:freshness' %}">{% trans "Data freshness" %}</a>
+      <form class="lang" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if LANGUAGE_CODE|slice:":2" == "fr" %}<button type="submit" name="language" value="en" lang="en" title="English">English</button>{% else %}<button type="submit" name="language" value="fr" lang="fr" title="Français">Français</button>{% endif %}
+      </form>
     </nav>
     {% block content %}{% endblock %}
   </main>

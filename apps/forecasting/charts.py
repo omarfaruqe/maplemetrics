@@ -7,6 +7,7 @@ from datetime import date
 from html import escape
 
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from apps.analytics.charts import _fmt, nice_ticks
 
@@ -96,11 +97,19 @@ def forecast_chart(
             f"<title>{d:%Y-%m}: {_fmt(v, decimals + 1)}{escape(unit)}</title></circle>"
         )
     for d, v, lo, hi in forecast:
+        tip = _(
+            "%(month)s forecast: %(value)s%(unit)s (%(level)d%% range %(low)s to %(high)s%(unit)s)"
+        ) % {
+            "month": f"{d:%Y-%m}",
+            "value": _fmt(v, decimals + 1),
+            "unit": unit,
+            "level": level,
+            "low": _fmt(lo, decimals + 1),
+            "high": _fmt(hi, decimals + 1),
+        }
         parts.append(
             f'<circle cx="{x(d):.1f}" cy="{y(v):.1f}" r="6" class="hit">'
-            f"<title>{d:%Y-%m} forecast: {_fmt(v, decimals + 1)}{escape(unit)} "
-            f"({level}% range {_fmt(lo, decimals + 1)} to {_fmt(hi, decimals + 1)}{escape(unit)})"
-            "</title></circle>"
+            f"<title>{escape(tip)}</title></circle>"
         )
     parts.append("</svg>")
     return mark_safe("".join(parts))  # noqa: S308

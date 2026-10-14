@@ -8,6 +8,7 @@ from datetime import date
 
 from django.db.models import Count, Max
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .models import Indicator, Observation
 
@@ -27,6 +28,17 @@ STALE_AFTER_DAYS = {
 DEFAULT_STALE_AFTER_DAYS = 120
 
 _SORT_RANK = {STALE: 0, EMPTY: 1, FRESH: 2}
+
+SOURCE_LABELS = {
+    Indicator.Source.BANK_OF_CANADA.value: _("Bank of Canada"),
+    Indicator.Source.STATISTICS_CANADA.value: _("Statistics Canada"),
+}
+FREQUENCY_LABELS = {
+    Indicator.Frequency.DAILY.value: _("Daily"),
+    Indicator.Frequency.MONTHLY.value: _("Monthly"),
+    Indicator.Frequency.QUARTERLY.value: _("Quarterly"),
+    Indicator.Frequency.ANNUAL.value: _("Annual"),
+}
 
 
 @dataclass(frozen=True)
@@ -83,9 +95,9 @@ def freshness_report(today: date | None = None) -> list[FreshnessRow]:
                 name_en=indicator.name_en,
                 name_fr=indicator.name_fr,
                 source=indicator.source,
-                source_label=indicator.get_source_display(),
+                source_label=str(SOURCE_LABELS.get(indicator.source, indicator.source)),
                 frequency=indicator.frequency,
-                frequency_label=indicator.get_frequency_display(),
+                frequency_label=str(FREQUENCY_LABELS.get(indicator.frequency, indicator.frequency)),
                 geographies=len(dates),
                 observations=row_counts.get(indicator.id, 0),
                 newest=newest,

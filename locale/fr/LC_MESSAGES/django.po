@@ -1,0 +1,305 @@
+# French translations for MapleMetrics.
+msgid ""
+msgstr ""
+"Project-Id-Version: MapleMetrics\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "%(diff)s pts vs Canada"
+msgstr "%(diff)s pts par rapport au Canada"
+
+msgid "%(geo)s, %(month)s: %(rate)s%% (change over 12 months: %(chg)s)"
+msgstr "%(geo)s, %(month)s : %(rate)s %% (variation sur 12 mois : %(chg)s)"
+
+msgid "%(geo)s: sales %(nom)s%%, prices %(inf)s%%, real %(real)s%%"
+msgstr "%(geo)s : ventes %(nom)s %%, prix %(inf)s %%, réel %(real)s %%"
+
+msgid "%(month)s forecast: %(value)s%(unit)s (%(level)d%% range %(low)s to %(high)s%(unit)s)"
+msgstr "Prévision de %(month)s : %(value)s%(unit)s (intervalle de %(level)d %% : %(low)s à %(high)s%(unit)s)"
+
+msgid "%(pct)s%% range"
+msgstr "Intervalle de %(pct)s %%"
+
+msgid "%(value)s pts"
+msgstr "%(value)s pts"
+
+msgid "12 months earlier"
+msgstr "12 mois plus tôt"
+
+msgid "Actual"
+msgstr "Observé"
+
+msgctxt "geography"
+msgid "Alberta"
+msgstr "Alberta"
+
+msgid "Annual"
+msgstr "Annuelle"
+
+msgid "Bank of Canada"
+msgstr "Banque du Canada"
+
+msgctxt "geography"
+msgid "British Columbia"
+msgstr "Colombie-Britannique"
+
+msgctxt "geography"
+msgid "Canada"
+msgstr "Canada"
+
+msgid "Canadian economy dashboard"
+msgstr "Tableau de bord de l'économie canadienne"
+
+msgid "Change (pts)"
+msgstr "Variation (pts)"
+
+msgid "Change in the all-items consumer price index over twelve months."
+msgstr "Variation de l'indice des prix à la consommation (ensemble) sur douze mois."
+
+msgid "Consumer price index (2002=100)"
+msgstr "Indice des prix à la consommation (2002=100)"
+
+msgid "Core inflation"
+msgstr "Inflation de base"
+
+msgid "Core inflation (CPI-trim)"
+msgstr "Inflation de base (IPC-tronq)"
+
+msgid "Daily"
+msgstr "Quotidienne"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Data freshness"
+msgstr "Fraîcheur des données"
+
+msgid "Days behind"
+msgstr "Jours de retard"
+
+msgid "Forecast"
+msgstr "Prévision"
+
+msgid "Forecast and %(pct)s%% range"
+msgstr "Prévision et intervalle de %(pct)s %%"
+
+msgid "Forecast, 12 months ahead"
+msgstr "Prévision à 12 mois"
+
+msgid "Forecasts"
+msgstr "Prévisions"
+
+msgid "Frequency"
+msgstr "Fréquence"
+
+msgid "Fresh"
+msgstr "À jour"
+
+msgid "Geographies"
+msgstr "Territoires"
+
+msgid "Geography"
+msgstr "Territoire"
+
+msgid "High"
+msgstr "Haut"
+
+msgid "How recent each indicator is, as of %(day)s. \"Days behind\" counts from the oldest geography's latest data point, so one lagging province shows up here."
+msgstr "Récence de chaque indicateur au %(day)s. Les « jours de retard » sont comptés à partir de la dernière donnée du territoire le moins à jour, de sorte qu'une province en retard apparaît ici."
+
+msgid "In backtests this method had %(pct)d%% lower error than assuming no change."
+msgstr "Lors des rétrotests, cette méthode a eu une erreur inférieure de %(pct)d %% à celle d'une hypothèse de stabilité."
+
+msgid "In backtests this method was no better than assuming no change, so read the line as 'about where it is now' and the shaded band as the useful part."
+msgstr "Lors des rétrotests, cette méthode n'a pas fait mieux que l'hypothèse d'une absence de changement : lisez la ligne comme « à peu près le niveau actuel » et la bande ombrée comme la partie utile."
+
+msgid "Indicator"
+msgstr "Indicateur"
+
+msgid "Inflation (CPI, year over year)"
+msgstr "Inflation (IPC, sur douze mois)"
+
+msgid "Interest rates, inflation, jobs and retail, from the Bank of Canada and Statistics Canada."
+msgstr "Taux d'intérêt, inflation, emploi et commerce de détail, selon la Banque du Canada et Statistique Canada."
+
+msgid "Latest"
+msgstr "Dernière valeur"
+
+msgid "Latest month, seasonally adjusted, 15 years and over. Canada is highlighted."
+msgstr "Dernier mois, désaisonnalisé, 15 ans et plus. Le Canada est mis en évidence."
+
+msgid "Low"
+msgstr "Bas"
+
+msgctxt "geography"
+msgid "Manitoba"
+msgstr "Manitoba"
+
+msgid "MapleMetrics: Canadian economic and market intelligence"
+msgstr "MapleMetrics : veille économique et de marché au Canada"
+
+msgid "Method: %(method)s. Checked against %(origins)s past forecast dates. Trained on data through %(through)s."
+msgstr "Méthode : %(method)s. Vérifiée sur %(origins)s dates de prévision passées. Entraînée sur les données jusqu'à %(through)s."
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Monthly"
+msgstr "Mensuelle"
+
+msgid "n/a"
+msgstr "s.o."
+
+msgctxt "geography"
+msgid "New Brunswick"
+msgstr "Nouveau-Brunswick"
+
+msgid "Newest"
+msgstr "Plus récente"
+
+msgctxt "geography"
+msgid "Newfoundland and Labrador"
+msgstr "Terre-Neuve-et-Labrador"
+
+msgid "No data"
+msgstr "Aucune donnée"
+
+msgid "No data for this province yet."
+msgstr "Aucune donnée pour cette province pour l'instant."
+
+msgid "No data loaded yet. Run the ingest commands first."
+msgstr "Aucune donnée chargée pour l'instant. Lancez d'abord les commandes d'ingestion."
+
+msgid "No forecasts yet. Run the forecast command first."
+msgstr "Aucune prévision pour l'instant. Lancez d'abord la commande de prévision."
+
+msgctxt "geography"
+msgid "Nova Scotia"
+msgstr "Nouvelle-Écosse"
+
+msgid "Observations"
+msgstr "Observations"
+
+msgid "Oldest latest"
+msgstr "Plus ancienne dernière"
+
+msgid "One province against Canada, over the last ten years."
+msgstr "Une province comparée au Canada, sur les dix dernières années."
+
+msgctxt "geography"
+msgid "Ontario"
+msgstr "Ontario"
+
+msgid "Policy rate"
+msgstr "Taux directeur"
+
+msgid "Policy rate, core inflation and the real rate"
+msgstr "Taux directeur, inflation de base et taux réel"
+
+msgid "Prices (%)"
+msgstr "Prix (%)"
+
+msgctxt "geography"
+msgid "Prince Edward Island"
+msgstr "Île-du-Prince-Édouard"
+
+msgid "Province"
+msgstr "Province"
+
+msgid "Province comparison"
+msgstr "Comparaison des provinces"
+
+msgid "Provinces"
+msgstr "Provinces"
+
+msgid "Quarterly"
+msgstr "Trimestrielle"
+
+msgctxt "geography"
+msgid "Quebec"
+msgstr "Québec"
+
+msgid "Rate (%)"
+msgstr "Taux (%)"
+
+msgid "Real (%)"
+msgstr "Réel (%)"
+
+msgid "Real policy rate"
+msgstr "Taux directeur réel"
+
+msgid "Real rate"
+msgstr "Taux réel"
+
+msgid "Real rate = policy rate at month end minus CPI-trim. Below zero, monetary policy is stimulating."
+msgstr "Taux réel = taux directeur en fin de mois moins l'IPC-tronq. Sous zéro, la politique monétaire est stimulante."
+
+msgid "Real retail growth, Canada"
+msgstr "Croissance réelle du commerce de détail, Canada"
+
+msgid "Real retail sales growth (year over year)"
+msgstr "Croissance réelle des ventes au détail (sur douze mois)"
+
+msgid "Real retail sales growth by province"
+msgstr "Croissance réelle des ventes au détail par province"
+
+msgid "Retail sales (billions of CAD)"
+msgstr "Ventes au détail (milliards de dollars canadiens)"
+
+msgid "Retail sales growth over twelve months, deflated by CPI."
+msgstr "Croissance des ventes au détail sur douze mois, corrigée de l'IPC."
+
+msgid "Sales (%)"
+msgstr "Ventes (%)"
+
+msgctxt "geography"
+msgid "Saskatchewan"
+msgstr "Saskatchewan"
+
+msgid "Seasonally adjusted, 15 years and over."
+msgstr "Désaisonnalisé, 15 ans et plus."
+
+msgid "Sections"
+msgstr "Sections"
+
+msgid "Show"
+msgstr "Afficher"
+
+msgid "Source"
+msgstr "Source"
+
+msgid "Stale"
+msgstr "En retard"
+
+msgid "Statistics Canada"
+msgstr "Statistique Canada"
+
+msgid "Status"
+msgstr "État"
+
+msgid "Twelve-month forecasts with the range that past forecasts of the same method stayed within."
+msgstr "Prévisions à douze mois, avec l'intervalle dans lequel sont restées les prévisions passées de la même méthode."
+
+msgid "Unemployment rate"
+msgstr "Taux de chômage"
+
+msgid "Unemployment rate by province"
+msgstr "Taux de chômage par province"
+
+msgid "Unemployment, Canada"
+msgstr "Chômage, Canada"
+
+msgid "View as table"
+msgstr "Voir sous forme de tableau"
+
+msgid "View as table (last 24 months)"
+msgstr "Voir sous forme de tableau (24 derniers mois)"
+
+msgid "year over year, %(month)s"
+msgstr "sur douze mois, %(month)s"
+
+msgid "Year over year: nominal retail sales growth deflated by the consumer price index. Red bars are declines."
+msgstr "Sur douze mois : croissance nominale des ventes au détail, corrigée de l'indice des prix à la consommation. Les barres rouges indiquent un recul."

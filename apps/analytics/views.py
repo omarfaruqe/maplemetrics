@@ -2,10 +2,10 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 
+from apps.core.localize import geography_name, number
+
 from . import kpis
 from .charts import Bar, Line, bar_chart, line_chart
-
-HISTORY_MONTHS = 120
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
@@ -21,19 +21,19 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     tiles = []
     if latest_rate:
         tiles += [
-            (_("Policy rate"), f"{latest_rate.policy:.2f}%", f"{latest_rate.date:%Y-%m}"),
+            (_("Policy rate"), f"{number(latest_rate.policy, 2)}%", f"{latest_rate.date:%Y-%m}"),
             (
                 _("Core inflation (CPI-trim)"),
-                f"{latest_rate.core:.1f}%",
+                f"{number(latest_rate.core)}%",
                 f"{latest_rate.date:%Y-%m}",
             ),
-            (_("Real policy rate"), f"{latest_rate.real:.2f}%", f"{latest_rate.date:%Y-%m}"),
+            (_("Real policy rate"), f"{number(latest_rate.real, 2)}%", f"{latest_rate.date:%Y-%m}"),
         ]
     if national_unemployment:
         tiles.append(
             (
                 _("Unemployment, Canada"),
-                f"{national_unemployment.rate:.1f}%",
+                f"{number(national_unemployment.rate)}%",
                 f"{national_unemployment.date:%Y-%m}",
             )
         )
@@ -41,7 +41,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
         tiles.append(
             (
                 _("Real retail growth, Canada"),
-                f"{national_retail.real:+.1f}%",
+                f"{number(national_retail.real, signed=True)}%",
                 _("year over year, %(month)s") % {"month": f"{national_retail.date:%Y-%m}"},
             )
         )
@@ -56,14 +56,16 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     unemployment_chart = bar_chart(
         [
             Bar(
-                r.geography,
+                geography_name(r.geography),
                 r.rate,
-                _("%(geo)s, %(month)s: %(rate).1f%% (change over 12 months: %(chg)s)")
+                _("%(geo)s, %(month)s: %(rate)s%% (change over 12 months: %(chg)s)")
                 % {
-                    "geo": r.geography,
+                    "geo": geography_name(r.geography),
                     "month": f"{r.date:%Y-%m}",
-                    "rate": r.rate,
-                    "chg": "n/a" if r.change is None else f"{r.change:+.1f} pts",
+                    "rate": number(r.rate),
+                    "chg": _("n/a")
+                    if r.change is None
+                    else _("%(value)s pts") % {"value": number(r.change, signed=True)},
                 },
                 emphasis=r.geography == kpis.NATIONAL,
             )
@@ -73,10 +75,15 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     retail_chart = bar_chart(
         [
             Bar(
-                r.geography,
+                geography_name(r.geography),
                 r.real,
-                _("%(geo)s: sales %(nom).1f%%, prices %(inf).1f%%, real %(real).1f%%")
-                % {"geo": r.geography, "nom": r.nominal, "inf": r.inflation, "real": r.real},
+                _("%(geo)s: sales %(nom)s%%, prices %(inf)s%%, real %(real)s%%")
+                % {
+                    "geo": geography_name(r.geography),
+                    "nom": number(r.nominal),
+                    "inf": number(r.inflation),
+                    "real": number(r.real),
+                },
                 emphasis=r.geography == kpis.NATIONAL,
             )
             for r in retail
@@ -96,6 +103,9 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     return render(request, "analytics/dashboard.html", context)
 
 
+HISTORY_MONTHS = 120
+
+
 def _tile(name: str, geo: str, geo_points, canada_points) -> tuple[str, str, str] | None:
     """A tile with the province's latest value and its gap to Canada in the same month."""
     if not geo_points:
@@ -104,8 +114,10 @@ def _tile(name: str, geo: str, geo_points, canada_points) -> tuple[str, str, str
     note = f"{day:%Y-%m}"
     canada = dict(canada_points).get(day)
     if geo != kpis.NATIONAL and canada is not None:
-        note += " \u00b7 " + _("%(diff)s pts vs Canada") % {"diff": f"{value - canada:+.1f}"}
-    return name, f"{value:.1f}%", note
+        note += " \u00b7 " + _("%(diff)s pts vs Canada") % {
+            "diff": number(value - canada, signed=True)
+        }
+    return name, f"{number(value)}%", note
 
 
 def provinces(request: HttpRequest) -> HttpResponse:
@@ -138,9 +150,13 @@ def provinces(request: HttpRequest) -> HttpResponse:
         for title, getter, note in sources:
             geo_points = getter(geo)
             canada_points = getter(kpis.NATIONAL)
-            lines = [Line(geo, "--series-1", geo_points[-HISTORY_MONTHS:])]
+            lines = [Line(geography_name(geo), "--series-1", geo_points[-HISTORY_MONTHS:])]
             if geo != kpis.NATIONAL:
-                lines.append(Line("Canada", "--context", canada_points[-HISTORY_MONTHS:]))
+                lines.append(
+                    Line(
+                        geography_name(kpis.NATIONAL), "--context", canada_points[-HISTORY_MONTHS:]
+                    )
+                )
             tile = _tile(title, geo, geo_points, canada_points)
             if tile:
                 tiles.append(tile)

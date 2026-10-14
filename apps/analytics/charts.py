@@ -13,6 +13,8 @@ from html import escape
 
 from django.utils.safestring import mark_safe
 
+from apps.core.localize import number
+
 
 @dataclass(frozen=True)
 class Line:
@@ -46,7 +48,7 @@ def nice_ticks(low: float, high: float, target: int = 5) -> list[float]:
 
 
 def _fmt(value: float, decimals: int = 1) -> str:
-    return f"{value:.{decimals}f}".replace("-", "\u2212")
+    return number(value, decimals).replace("-", "−")
 
 
 def spread_labels(positions: list[float], gap: float = 15.0) -> list[float]:
@@ -115,7 +117,6 @@ def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int
         parts.append(
             f'<circle cx="{x(last_day):.1f}" cy="{y(last_value):.1f}" r="4" class="dot" '
             f'style="fill:var({line.color})"/>'
-            # f'<text x="{x(last_day) + 10:.1f}" y="{y(last_value) + 4:.1f}" class="label">'
             f'<text x="{x(last_day) + 10:.1f}" y="{label_ys[line.name] + 4:.1f}" class="label">'
             f"{escape(line.name)} {_fmt(last_value)}{unit}</text>"
         )

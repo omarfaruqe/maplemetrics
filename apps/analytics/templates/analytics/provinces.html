@@ -1,4 +1,4 @@
-{% extends "analytics/base.html" %}{% load i18n %}
+{% extends "analytics/base.html" %}{% load i18n maple %}
 {% block title %}{% trans "Province comparison" %}{% endblock %}
 {% block content %}
     <h1>{% trans "Province comparison" %}</h1>
@@ -10,7 +10,7 @@
     <form method="get" class="picker">
       <label for="geo">{% trans "Province" %}</label>
       <select id="geo" name="geo" onchange="this.form.submit()">
-        {% for name in options %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name }}</option>{% endfor %}
+        {% for name in options %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name|geography }}</option>{% endfor %}
       </select>
       <button type="submit">{% trans "Show" %}</button>
     </form>
@@ -27,8 +27,8 @@
       <p class="note">{{ panel.note }}</p>
       {% if panel.has_data %}
       <ul class="legend">
-        <li><i style="background:var(--series-1)"></i>{{ geo }}</li>
-        {% if panel.compare %}<li><i style="background:var(--context)"></i>Canada</li>{% endif %}
+        <li><i style="background:var(--series-1)"></i>{{ geo|geography }}</li>
+        {% if panel.compare %}<li><i style="background:var(--context)"></i>{{ "Canada"|geography }}</li>{% endif %}
       </ul>
       <div class="scroll">{{ panel.chart }}</div>
       {% else %}

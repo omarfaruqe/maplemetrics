@@ -1,4 +1,4 @@
-{% extends "analytics/base.html" %}{% load i18n %}
+{% extends "analytics/base.html" %}{% load i18n maple %}
 {% block title %}{% trans "Forecasts" %}{% endblock %}
 {% block content %}
     <h1>{% trans "Forecasts" %}</h1>
@@ -14,7 +14,7 @@
       </select>
       <label for="geo">{% trans "Geography" %}</label>
       <select id="geo" name="geo" onchange="this.form.submit()">
-        {% for name in geographies %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name }}</option>{% endfor %}
+        {% for name in geographies %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name|geography }}</option>{% endfor %}
       </select>
       <button type="submit">{% trans "Show" %}</button>
     </form>
@@ -30,7 +30,7 @@
     </ul>
 
     <section class="card">
-      <h2>{{ title }}: {{ geo }}</h2>
+      <h2>{{ title }}: {{ geo|geography }}</h2>
       <p class="note">{{ verdict }}</p>
       <ul class="legend">
         <li><i style="background:var(--series-1)"></i>{% trans "Actual" %}</li>

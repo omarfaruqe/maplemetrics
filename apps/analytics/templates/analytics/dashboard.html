@@ -1,4 +1,4 @@
-{% extends "analytics/base.html" %}{% load i18n %}
+{% extends "analytics/base.html" %}{% load i18n maple %}
 {% block title %}{% trans "Canadian economy dashboard" %}{% endblock %}
 {% block content %}
     <h1>{% trans "Canadian economy dashboard" %}</h1>
@@ -42,7 +42,7 @@
         <summary>{% trans "View as table" %}</summary>
         <div class="scroll"><table>
           <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Rate (%)" %}</th><th class="num">{% trans "12 months earlier" %}</th><th class="num">{% trans "Change (pts)" %}</th></tr></thead>
-          <tbody>{% for r in unemployment %}<tr><td>{{ r.geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
+          <tbody>{% for r in unemployment %}<tr><td>{{ r.geography|geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>
@@ -57,7 +57,7 @@
         <summary>{% trans "View as table" %}</summary>
         <div class="scroll"><table>
           <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Sales (%)" %}</th><th class="num">{% trans "Prices (%)" %}</th><th class="num">{% trans "Real (%)" %}</th></tr></thead>
-          <tbody>{% for r in retail %}<tr><td>{{ r.geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
+          <tbody>{% for r in retail %}<tr><td>{{ r.geography|geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>

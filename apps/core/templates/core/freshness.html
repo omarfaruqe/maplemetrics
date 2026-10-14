@@ -21,6 +21,9 @@
     h1 { margin: 0 0 8px; font-size: 1.6rem; }
     .lead { margin: 0 0 24px; color: var(--muted); max-width: 70ch; }
     .scroll { overflow-x: auto; }
+    .lang { text-align: right; margin: 0 0 8px; }
+    .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--muted);
+                   text-decoration: underline; cursor: pointer; }
     table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
     th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
     thead th { font-weight: 600; color: var(--muted); font-size: 0.85rem; }
@@ -38,6 +41,10 @@
 </head>
 <body>
   <main>
+    <form class="lang" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if LANGUAGE_CODE|slice:":2" == "fr" %}<button type="submit" name="language" value="en" lang="en" title="English">English</button>{% else %}<button type="submit" name="language" value="fr" lang="fr" title="Français">Français</button>{% endif %}
+      </form>
     <h1>{% trans "Data freshness" %}</h1>
     <p class="lead">
       {% blocktrans with day=today|date:"Y-m-d" %}How recent each indicator is, as of {{ day }}. "Days behind" counts from the oldest geography's latest data point, so one lagging province shows up here.{% endblocktrans %}
