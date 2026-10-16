@@ -36,6 +36,7 @@ def test_health_check_is_exempt_from_the_https_redirect():
     result = run_in_production("-c", code)
     assert result.stdout.strip() == "True ['^health/$']", result.stdout + result.stderr
 
+
 def test_plain_http_mode_disables_https_only_settings():
     code = (
         "import django; django.setup(); from django.conf import settings as s; "
