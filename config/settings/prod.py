@@ -6,14 +6,18 @@ from .base import SECRET_KEY, env_bool
 if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover
     raise RuntimeError("Set DJANGO_SECRET_KEY in production.")
 
+# HTTPS is the default. Set DJANGO_HTTPS=false only for a plain-HTTP deployment
+# (for example a server reached by IP address with no domain name and no certificate).
+HTTPS = env_bool("DJANGO_HTTPS", True)
+
 DEBUG = False
-SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", True)
+SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", HTTPS)
 # The container healthcheck calls /health/ over plain HTTP, so it must not be redirected.
 SECURE_REDIRECT_EXEMPT = [r"^health/$"]
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SESSION_COOKIE_SECURE = HTTPS
+CSRF_COOKIE_SECURE = HTTPS
+SECURE_HSTS_SECONDS = 31536000 if HTTPS else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"

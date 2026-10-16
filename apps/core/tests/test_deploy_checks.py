@@ -35,3 +35,21 @@ def test_health_check_is_exempt_from_the_https_redirect():
     )
     result = run_in_production("-c", code)
     assert result.stdout.strip() == "True ['^health/$']", result.stdout + result.stderr
+
+def test_plain_http_mode_disables_https_only_settings():
+    code = (
+        "import django; django.setup(); from django.conf import settings as s; "
+        "print(s.SECURE_SSL_REDIRECT, s.SESSION_COOKIE_SECURE, s.CSRF_COOKIE_SECURE, "
+        "s.SECURE_HSTS_SECONDS)"
+    )
+    env = {**PRODUCTION_ENV, "DJANGO_HTTPS": "false"}
+    env.pop("DJANGO_SECURE_SSL_REDIRECT")
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=ROOT,
+        env={**{k: v for k, v in os.environ.items() if k != "DJANGO_SECURE_SSL_REDIRECT"}, **env},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.stdout.strip() == "False False False 0", result.stdout + result.stderr
