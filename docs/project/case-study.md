@@ -71,7 +71,8 @@ register. The [charter](charter.md), [backlog](backlog.md), [sprint reviews](spr
 
 - The demo runs over plain HTTP until a domain exists, so traffic is not encrypted. That is
   acceptable for public data and is tracked in the backlog.
-- Backups exist but a restore has not been tested yet.
+- Backups are restore-tested, but they are stored on the same server, so copying them off the
+  machine is still a manual step.
 - Accessibility was checked with automated tools, not with people who use assistive technology.
 - The French text has not been reviewed by a professional translator.
 

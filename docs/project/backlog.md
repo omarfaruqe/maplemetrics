@@ -44,6 +44,7 @@ gantt
 | Security | Content-Security-Policy, `bandit`, `pip-audit`, Dependabot, updated Actions | `cf6b0a2` |
 | Observability | `/status/` page and `/status.json`, structured JSON logs with request ids | `3e6b0e3` |
 | Static files | WhiteNoise, build-time `collectstatic` | `9b6fbb5` |
+| Backup and restore | Scripted, tested backup (`deploy/backup.sh`) and restore check (`deploy/restore-test.sh`); first real restore verified on the server 2026-10-18 | `deploy/`, `test_deploy_scripts.py` |
 | Project documents | This folder | `docs/project/` |
 | Live hosting | Site reachable from outside at `/maplemetrics/` through the shared gateway; first full data refresh loaded 8 of 8 indicators and 33 forecasts; status page all `ok` (verified 2026-10-18) | (server; no commit) |
 
@@ -56,7 +57,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-01 | Make the server reachable from the internet on port 80 and confirm the demo URL loads | Must | S | The charter's last success criterion; a live demo is the best proof of the project | **Done 2026-10-18.** Verified from outside with `curl` (redirect to the dashboard, through the gateway) and `/status.json` |
 | B-02 | Confirm the first full data refresh loaded and the status page reads "ok" | Must | S | Proves the pipeline works in production | **Done 2026-10-18.** Status `ok`: 8 of 8 indicators fresh, 33 forecasts, last load minutes old |
 | B-03 | Set up and verify the daily cron refresh and backup job on the server | Must | S | Without it the data goes stale and the status page warns | Open |
-| B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | Open |
+| B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | **Done 2026-10-18.** `deploy/restore-test.sh` restored a real backup into a scratch database on the server and the counts matched (`PASS`). Procedure in the operations guide |
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |
 | B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Open |
 | B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Open |
@@ -69,6 +70,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-14 | Container image vulnerability scan in CI | Could | S | Dependabot updates the base image but the built image is not scanned | Open |
 | B-15 | Usability test with screen-reader users | Could | M | Automated tools find only part of the problems | Open |
 | B-16 | Demo GIF and a short video walkthrough for the README | Could | S | Faster to review than screenshots | Open |
+| B-17 | Copy backups off the server automatically | Should | M | Backups sit on the same disk as the database, so a disk failure would lose both | Open |
 
 ## Prioritisation notes
 
