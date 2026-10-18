@@ -84,6 +84,63 @@ docker compose -f docker-compose.yml -f docker-compose.server.yml logs --no-log-
 The refresh runs from cron, so its output goes to the file named in the cron line. Its log lines
 are JSON too, and `grep refresh` shows how long each step took and whether one failed.
 
+## Scheduled jobs, backups and restore
+
+Two jobs run every day from the server's crontab (times are the server's time zone):
+
+| Time | Job | What it does |
+|---|---|---|
+| 06:00 | Refresh | Reloads every source and rebuilds the forecasts; output goes to `~/maplemetrics-refresh.log` |
+| 06:30 | Backup | `deploy/backup.sh` writes `~/backups/maplemetrics-DATE.sql.gz`, keeps 14 days, and output goes to `~/maplemetrics-backup.log` |
+
+`docker compose run` needs `-T` in cron because cron has no terminal. The backup script only keeps an
+archive that `gzip -t` can read, so a failed dump never replaces a good backup.
+
+To install the schedule (once; running it twice creates duplicates):
+
+```bash
+(crontab -l 2>/dev/null; echo '0 6 * * * cd $HOME/maplemetrics && docker compose -f docker-compose.yml -f docker-compose.server.yml run --rm -T refresh >> $HOME/maplemetrics-refresh.log 2>&1'; echo '30 6 * * * bash $HOME/maplemetrics/deploy/backup.sh >> $HOME/maplemetrics-backup.log 2>&1') | crontab -
+crontab -l
+```
+
+### Testing that a backup restores
+
+A backup that has never been restored is an assumption. `deploy/restore-test.sh` loads the newest
+backup (or the file you name) into a scratch database inside the same PostgreSQL container,
+compares row counts of the main tables with the live database, prints how long the restore took,
+and drops the scratch database. The live database is only read.
+
+```bash
+bash deploy/restore-test.sh
+bash deploy/restore-test.sh ~/backups/maplemetrics-2026-10-18.sql.gz
+```
+
+| Result | Meaning |
+|---|---|
+| `PASS` | The backup restores and every count matches |
+| `PASS WITH DIFFERENCES` | It restores and holds data, but data was loaded after the backup was taken (normal) |
+| `FAIL` | The archive is unreadable, the restore errored, or the restored database is empty. Exit code 1 |
+
+Run it after the first backup, after any change to the database structure, and from time to time.
+The latest result belongs in the [risk register](project/risk-register.md) (R-09).
+
+### Restoring for real
+
+To recover from data loss: stop the web service, drop and recreate the database, load the backup,
+and start the web service again. Because every source is public, the other way to recover is to
+start with an empty database and run the refresh, which rebuilds everything in several minutes;
+the backup mainly saves time.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.server.yml stop web
+docker compose -f docker-compose.yml -f docker-compose.server.yml exec -T db psql -U maplemetrics -d postgres -c "DROP DATABASE maplemetrics" -c "CREATE DATABASE maplemetrics"
+gunzip -c ~/backups/maplemetrics-DATE.sql.gz | docker compose -f docker-compose.yml -f docker-compose.server.yml exec -T db psql -U maplemetrics -d maplemetrics
+docker compose -f docker-compose.yml -f docker-compose.server.yml start web
+```
+
+Backups sit on the same disk as the database, so copy `~/backups` to another machine now and then;
+a disk failure would take both.
+
 ## Not covered yet
 
 - **Log shipping and retention.** Logs stay in Docker on the server and are lost if the container

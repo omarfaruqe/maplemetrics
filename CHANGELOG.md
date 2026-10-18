@@ -29,6 +29,10 @@
 - The daily refresh now logs its start, each step with its duration, any failure with the
   traceback, and its finish.
 - Added `docs/operations.md`, and a Status link in the navigation.
+- Backup and restore are now scripts in `deploy/`: `backup.sh` (verifies the archive before keeping
+  it, prunes after 14 days) and `restore-test.sh` (restores into a scratch database, compares row
+  counts with the live one, always cleans up). Tests run both against a pretend `docker`. The
+  operations guide documents the cron schedule, which needs `-T` for `docker compose run`.
 
 ### Security
 - Added a Content-Security-Policy and a Permissions-Policy. The site allows no scripts and no
