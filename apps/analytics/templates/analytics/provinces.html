@@ -9,7 +9,7 @@
     {% else %}
     <form method="get" class="picker">
       <label for="geo">{% trans "Province" %}</label>
-      <select id="geo" name="geo" onchange="this.form.submit()">
+      <select id="geo" name="geo">
         {% for name in options %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name|geography }}</option>{% endfor %}
       </select>
       <button type="submit">{% trans "Show" %}</button>
@@ -23,14 +23,22 @@
 
     {% for panel in panels %}
     <section class="card">
-      <h2>{{ panel.title }}</h2>
+      <h2 id="panel-{{ forloop.counter }}-heading">{{ panel.title }}</h2>
       <p class="note">{{ panel.note }}</p>
       {% if panel.has_data %}
       <ul class="legend">
         <li><i style="background:var(--series-1)"></i>{{ geo|geography }}</li>
         {% if panel.compare %}<li><i style="background:var(--context)"></i>{{ "Canada"|geography }}</li>{% endif %}
       </ul>
-      <div class="scroll">{{ panel.chart }}</div>
+      <div class="scroll" role="region" aria-labelledby="panel-{{ forloop.counter }}-heading" tabindex="0">{{ panel.chart }}</div>
+      <details>
+        <summary>{% trans "View as table" %}</summary>
+        <div class="scroll" role="region" aria-labelledby="panel-{{ forloop.counter }}-caption" tabindex="0"><table>
+          <caption id="panel-{{ forloop.counter }}-caption" class="sr-only">{% blocktrans with title=panel.title %}{{ title }}, data table{% endblocktrans %}</caption>
+          <thead><tr><th scope="col">{% trans "Month" %}</th><th scope="col" class="num">{{ geo|geography }} (%)</th>{% if panel.compare %}<th scope="col" class="num">{{ "Canada"|geography }} (%)</th>{% endif %}</tr></thead>
+          <tbody>{% for day, value, canada in panel.rows %}<tr><th scope="row">{{ day|date:"Y-m" }}</th><td class="num">{{ value|floatformat:1 }}</td>{% if panel.compare %}<td class="num">{{ canada|floatformat:1|default:"–" }}</td>{% endif %}</tr>{% endfor %}</tbody>
+        </table></div>
+      </details>
       {% else %}
       <p class="note">{% trans "No data for this province yet." %}</p>
       {% endif %}

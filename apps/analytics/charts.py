@@ -2,16 +2,22 @@
 
 Colors come from CSS custom properties (``--series-1`` and so on) defined by the page, which is
 how light and dark mode switch without touching the markup. Hover text uses ``<title>`` elements.
+
+Every chart carries an accessible name (``aria-label``) and a plain-language description of what it
+shows (``<desc>``), because screen readers cannot read the drawing itself. The pages also offer the
+same numbers as a table.
 """
 
 from __future__ import annotations
 
 import math
+import zlib
 from dataclasses import dataclass
 from datetime import date
 from html import escape
 
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from apps.core.localize import number
 
@@ -51,6 +57,71 @@ def _fmt(value: float, decimals: int = 1) -> str:
     return number(value, decimals).replace("-", "−")
 
 
+def svg_open(width: int, height: int, label: str = "", summary: str = "") -> str:
+    """Opening ``<svg>`` tag with an accessible name and an optional description."""
+    attributes = f'viewBox="0 0 {width} {height}" role="img" class="chart"'
+    attributes += f' aria-label="{escape(label or _("Chart"), quote=True)}"'
+    description = ""
+    if summary:
+        description_id = "chart-" + format(zlib.crc32(f"{label}|{summary}".encode()), "08x")
+        attributes += f' aria-describedby="{description_id}"'
+        description = f'<desc id="{description_id}">{escape(summary)}</desc>'
+    return f'<svg {attributes} xmlns="http://www.w3.org/2000/svg">{description}'
+
+
+def describe_lines(lines: list[Line], unit: str = "%") -> str:
+    """One sentence per series: where it started, where it ended and its range."""
+    sentences = []
+    for line in lines:
+        if not line.points:
+            continue
+        values = [value for _day, value in line.points]
+        (first_day, first), (last_day, last) = line.points[0], line.points[-1]
+        sentences.append(
+            _(
+                "%(name)s: %(first)s%(unit)s in %(first_month)s, "
+                "%(last)s%(unit)s in %(last_month)s; lowest %(low)s%(unit)s, "
+                "highest %(high)s%(unit)s."
+            )
+            % {
+                "name": line.name,
+                "first": _fmt(first, 2),
+                "first_month": f"{first_day:%Y-%m}",
+                "last": _fmt(last, 2),
+                "last_month": f"{last_day:%Y-%m}",
+                "low": _fmt(min(values), 2),
+                "high": _fmt(max(values), 2),
+                "unit": unit,
+            }
+        )
+    return " ".join(sentences)
+
+
+def describe_bars(bars: list[Bar], unit: str = "%", decimals: int = 1) -> str:
+    """The highest and lowest bars, plus the highlighted one (Canada) for comparison."""
+    if not bars:
+        return ""
+    highest = max(bars, key=lambda bar: bar.value)
+    lowest = min(bars, key=lambda bar: bar.value)
+    sentences = [
+        _("Highest: %(label)s, %(value)s%(unit)s. Lowest: %(low_label)s, %(low_value)s%(unit)s.")
+        % {
+            "label": highest.label,
+            "value": _fmt(highest.value, decimals),
+            "low_label": lowest.label,
+            "low_value": _fmt(lowest.value, decimals),
+            "unit": unit,
+        }
+    ]
+    for bar in bars:
+        if bar.emphasis and bar not in (highest, lowest):
+            sentences.append(
+                _("%(label)s: %(value)s%(unit)s.")
+                % {"label": bar.label, "value": _fmt(bar.value, decimals), "unit": unit}
+            )
+    return " ".join(sentences)
+
+
 def spread_labels(positions: list[float], gap: float = 15.0) -> list[float]:
     """Nudge label y positions apart so none are closer than ``gap``; order is preserved."""
     order = sorted(range(len(positions)), key=lambda i: positions[i])
@@ -60,7 +131,9 @@ def spread_labels(positions: list[float], gap: float = 15.0) -> list[float]:
     return placed
 
 
-def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int = 340) -> str:
+def line_chart(
+    lines: list[Line], unit: str = "%", width: int = 760, height: int = 340, label: str = ""
+) -> str:
     """A multi-series line chart on a single y axis with a zero line, year ticks and end labels."""
     left, right, top, bottom = 44, 120, 12, 28
     all_points = [point for line in lines for point in line.points]
@@ -79,10 +152,7 @@ def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int
     def y(value: float) -> float:
         return top + (y_max - value) / (y_max - y_min) * (height - top - bottom)
 
-    parts = [
-        f'<svg viewBox="0 0 {width} {height}" role="img" class="chart" '
-        'xmlns="http://www.w3.org/2000/svg">'
-    ]
+    parts = [svg_open(width, height, label, describe_lines(lines, unit))]
     for tick in ticks:
         zero = tick == 0
         parts.append(
@@ -129,7 +199,9 @@ def line_chart(lines: list[Line], unit: str = "%", width: int = 760, height: int
     return mark_safe("".join(parts))  # noqa: S308
 
 
-def bar_chart(bars: list[Bar], unit: str = "%", width: int = 760, decimals: int = 1) -> str:
+def bar_chart(
+    bars: list[Bar], unit: str = "%", width: int = 760, decimals: int = 1, label: str = ""
+) -> str:
     """Horizontal bars from a zero baseline. Negative values go left in the 'negative' color."""
     if not bars:
         return ""
@@ -146,8 +218,7 @@ def bar_chart(bars: list[Bar], unit: str = "%", width: int = 760, decimals: int 
 
     zero = x(0)
     parts = [
-        f'<svg viewBox="0 0 {width} {height}" role="img" class="chart" '
-        'xmlns="http://www.w3.org/2000/svg">',
+        svg_open(width, height, label, describe_bars(bars, unit, decimals)),
         f'<line x1="{zero:.1f}" x2="{zero:.1f}" y1="0" y2="{height}" class="axis"/>',
     ]
     for i, bar in enumerate(bars):

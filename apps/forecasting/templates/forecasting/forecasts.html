@@ -9,11 +9,11 @@
     {% else %}
     <form method="get" class="picker">
       <label for="indicator">{% trans "Indicator" %}</label>
-      <select id="indicator" name="indicator" onchange="this.form.submit()">
+      <select id="indicator" name="indicator">
         {% for value, label in indicators %}<option value="{{ value }}"{% if value == code %} selected{% endif %}>{{ label }}</option>{% endfor %}
       </select>
       <label for="geo">{% trans "Geography" %}</label>
-      <select id="geo" name="geo" onchange="this.form.submit()">
+      <select id="geo" name="geo">
         {% for name in geographies %}<option value="{{ name }}"{% if name == geo %} selected{% endif %}>{{ name|geography }}</option>{% endfor %}
       </select>
       <button type="submit">{% trans "Show" %}</button>
@@ -30,21 +30,22 @@
     </ul>
 
     <section class="card">
-      <h2>{{ title }}: {{ geo|geography }}</h2>
+      <h2 id="forecast-heading">{{ title }}: {{ geo|geography }}</h2>
       <p class="note">{{ verdict }}</p>
       <ul class="legend">
         <li><i style="background:var(--series-1)"></i>{% trans "Actual" %}</li>
         <li><i style="background:var(--series-1);opacity:0.5"></i>{% blocktrans with pct=level %}Forecast and {{ pct }}% range{% endblocktrans %}</li>
       </ul>
-      <div class="scroll">{{ chart }}</div>
+      <div class="scroll" role="region" aria-labelledby="forecast-heading" tabindex="0">{{ chart }}</div>
       <p class="note">
         {% blocktrans with method=forecast.method origins=forecast.backtest_origins through=forecast.trained_through|date:"Y-m" %}Method: {{ method }}. Checked against {{ origins }} past forecast dates. Trained on data through {{ through }}.{% endblocktrans %}
       </p>
       <details>
         <summary>{% trans "View as table" %}</summary>
-        <div class="scroll"><table>
-          <thead><tr><th>{% trans "Month" %}</th><th class="num">{% trans "Forecast" %}</th><th class="num">{% trans "Low" %}</th><th class="num">{% trans "High" %}</th></tr></thead>
-          <tbody>{% for day, value, low, high in rows %}<tr><td>{{ day|date:"Y-m" }}</td><td class="num">{{ value|floatformat:dp }}{{ unit }}</td><td class="num">{{ low|floatformat:dp }}{{ unit }}</td><td class="num">{{ high|floatformat:dp }}{{ unit }}</td></tr>{% endfor %}</tbody>
+        <div class="scroll" role="region" aria-labelledby="forecast-table-caption" tabindex="0"><table>
+          <caption id="forecast-table-caption" class="sr-only">{% blocktrans with title=title %}{{ title }}, data table{% endblocktrans %}: {{ geo|geography }}</caption>
+          <thead><tr><th scope="col">{% trans "Month" %}</th><th scope="col" class="num">{% trans "Forecast" %}</th><th scope="col" class="num">{% trans "Low" %}</th><th scope="col" class="num">{% trans "High" %}</th></tr></thead>
+          <tbody>{% for day, value, low, high in rows %}<tr><th scope="row">{{ day|date:"Y-m" }}</th><td class="num">{{ value|floatformat:dp }}{{ unit }}</td><td class="num">{{ low|floatformat:dp }}{{ unit }}</td><td class="num">{{ high|floatformat:dp }}{{ unit }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>

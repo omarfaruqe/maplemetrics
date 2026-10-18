@@ -9,7 +9,7 @@ from html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
-from apps.analytics.charts import _fmt, nice_ticks
+from apps.analytics.charts import _fmt, nice_ticks, svg_open
 
 
 def forecast_chart(
@@ -20,6 +20,7 @@ def forecast_chart(
     level: int = 80,
     width: int = 760,
     height: int = 340,
+    label: str = "",
 ) -> str:
     """History as a solid line, the forecast dashed, and a shaded band for the range.
 
@@ -41,17 +42,28 @@ def forecast_chart(
     def y(value: float) -> float:
         return top + (y_max - value) / ((y_max - y_min) or 1) * (height - top - bottom)
 
-    parts = [
-        f'<svg viewBox="0 0 {width} {height}" role="img" class="chart" '
-        'xmlns="http://www.w3.org/2000/svg">'
-    ]
+    end_row = forecast[-1]
+    summary = _(
+        "Latest actual: %(actual)s%(unit)s in %(month)s. Forecast for %(end_month)s: "
+        "%(value)s%(unit)s, with a %(level)d%% range from %(low)s%(unit)s to %(high)s%(unit)s."
+    ) % {
+        "actual": _fmt(history[-1][1], decimals + 1),
+        "month": f"{history[-1][0]:%Y-%m}",
+        "end_month": f"{end_row[0]:%Y-%m}",
+        "value": _fmt(end_row[1], decimals + 1),
+        "low": _fmt(end_row[2], decimals + 1),
+        "high": _fmt(end_row[3], decimals + 1),
+        "level": level,
+        "unit": unit,
+    }
+    parts = [svg_open(width, height, label, summary)]
     for tick in ticks:
-        label = _fmt(tick, 0 if float(tick).is_integer() else decimals)
+        tick_label = _fmt(tick, 0 if float(tick).is_integer() else decimals)
         parts.append(
             f'<line x1="{left}" x2="{width - right}" y1="{y(tick):.1f}" y2="{y(tick):.1f}" '
             'class="grid"/>'
             f'<text x="{left - 8}" y="{y(tick) + 4:.1f}" text-anchor="end" class="tick">'
-            f"{label}</text>"
+            f"{tick_label}</text>"
         )
     first_year, last_year = min(d.year for d, _ in history), max(r[0].year for r in forecast)
     year_step = max(1, math.ceil((last_year - first_year) / 6))

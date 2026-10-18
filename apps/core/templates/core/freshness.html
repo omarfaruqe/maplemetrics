@@ -7,12 +7,12 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #ffffff; --fg: #1a1d21; --muted: #596270; --line: #d8dce2;
+      --bg: #ffffff; --fg: #1a1d21; --muted: #596270; --line: #d8dce2; --link: #1f66bd;
       --ok: #14683b; --warn: #8f5200; --bad: #a3262a;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #14161a; --fg: #e8eaee; --muted: #a3abb8; --line: #2f343c;
+        --bg: #14161a; --fg: #e8eaee; --muted: #a3abb8; --line: #2f343c; --link: #6fa8f0;
         --ok: #5fd093; --warn: #f0b24a; --bad: #ff8a8d;
       }
     }
@@ -21,6 +21,14 @@
     h1 { margin: 0 0 8px; font-size: 1.6rem; }
     .lead { margin: 0 0 24px; color: var(--muted); max-width: 70ch; }
     .scroll { overflow-x: auto; }
+    :focus-visible { outline: 3px solid var(--link); outline-offset: 2px; border-radius: 2px; }
+    main:focus { outline: none; }
+    .skip { position: absolute; left: 8px; top: -64px; z-index: 10; padding: 8px 14px;
+            background: var(--bg); color: var(--fg); border: 2px solid var(--link);
+            border-radius: 8px; }
+    .skip:focus { top: 8px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+               overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .lang { text-align: right; margin: 0 0 8px; }
     .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--muted);
                    text-decoration: underline; cursor: pointer; }
@@ -40,17 +48,19 @@
   </style>
 </head>
 <body>
-  <main>
+  <a class="skip" href="#main">{% trans "Skip to main content" %}</a>
+  <main id="main" tabindex="-1">
     <form class="lang" action="{% url 'set_language' %}" method="post">{% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
         {% if LANGUAGE_CODE|slice:":2" == "fr" %}<button type="submit" name="language" value="en" lang="en" title="English">English</button>{% else %}<button type="submit" name="language" value="fr" lang="fr" title="Français">Français</button>{% endif %}
       </form>
-    <h1>{% trans "Data freshness" %}</h1>
+    <h1 id="freshness-heading">{% trans "Data freshness" %}</h1>
     <p class="lead">
       {% blocktrans with day=today|date:"Y-m-d" %}How recent each indicator is, as of {{ day }}. "Days behind" counts from the oldest geography's latest data point, so one lagging province shows up here.{% endblocktrans %}
     </p>
-    <div class="scroll">
+    <div class="scroll" role="region" aria-labelledby="freshness-heading" tabindex="0">
       <table>
+        <caption class="sr-only">{% trans "Data freshness" %}</caption>
         <thead>
           <tr>
             <th scope="col">{% trans "Indicator" %}</th>

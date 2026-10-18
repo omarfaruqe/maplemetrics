@@ -32,6 +32,9 @@ warehouse, freshness monitoring), **data analysis** (KPIs and dashboards) and **
   cache headers.
 - **Speaks English and French**: the language follows the browser and can be switched on every
   page. Province names, number formats and chart tooltips follow the language too.
+- **Is built to be accessible**: it targets WCAG 2.2 AA, with a skip link, keyboard-reachable
+  charts and tables, a text description for every chart, and an automated axe-core audit in CI.
+  See [Accessibility](docs/accessibility.md).
 - **Watches itself**: a freshness page and command flag any indicator whose data is stale.
 
 ## Quick start
@@ -105,7 +108,9 @@ ruff check . && ruff format --check .
 
 Tests use in-memory SQLite unless `POSTGRES_HOST` is set; CI runs them against PostgreSQL 16 with
 an 80% coverage gate. CI also lints, builds the Docker image and smoke-tests the running stack.
-A test runs Django's `check --deploy` against the production settings.
+A test runs Django's `check --deploy` against the production settings. Another group of tests
+checks accessibility rules (colour contrast, chart descriptions, table captions); a browser-based
+axe-core audit runs in CI and can be run locally, see [Accessibility](docs/accessibility.md).
 
 To add or change French text, edit `locale/fr/LC_MESSAGES/django.po` and run
 `python manage.py compile_translations`. A test fails if a string in the code has no translation
@@ -130,6 +135,7 @@ docs/              Architecture, data dictionary, forecasting methods
 - [Architecture](docs/architecture.md): how the pieces fit together and why
 - [Data dictionary](docs/data-dictionary.md): every source, indicator and table
 - [Forecasting methods](docs/methods.md): how forecasts are built, scored and what they cannot do
+- [Accessibility](docs/accessibility.md): the standard it targets, what is tested and the known gaps
 
 ## Honest limits
 

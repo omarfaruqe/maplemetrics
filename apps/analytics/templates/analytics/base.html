@@ -7,15 +7,17 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f9f9f7; --surface: #fcfcfb; --fg: #0b0b0b; --muted: #52514e; --faint: #898781;
+      --bg: #f9f9f7; --surface: #fcfcfb; --fg: #0b0b0b; --muted: #52514e; --faint: #6b6a65;
+      --link: #1f66bd;
       --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10);
-      --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+      --series-1: #2a78d6; --series-2: #eb6834; --series-3: #12936a;
       --negative: #e34948; --emphasis: #184f95; --context: #898781;
     }
     @media (prefers-color-scheme: dark) {
       :root:where(:not([data-theme="light"])) {
         color-scheme: dark;
         --bg: #0d0d0d; --surface: #1a1a19; --fg: #f0efec; --muted: #c3c2b7; --faint: #898781;
+        --link: #3987e5;
         --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
         --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
         --negative: #e66767; --emphasis: #86b6ef; --context: #898781;
@@ -24,6 +26,7 @@
     :root[data-theme="dark"] {
       color-scheme: dark;
       --bg: #0d0d0d; --surface: #1a1a19; --fg: #f0efec; --muted: #c3c2b7; --faint: #898781;
+      --link: #3987e5;
       --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
       --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
       --negative: #e66767; --emphasis: #86b6ef; --context: #898781;
@@ -64,13 +67,23 @@
     .scroll { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 8px; }
     th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--grid); }
+    tbody th { font-weight: 400; }
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     nav { margin-top: 24px; font-size: 0.9rem; }
-    a { color: var(--series-1); }
-    .topnav { display: flex; align-items: center; gap: 16px; margin: 0 0 16px; font-size: 0.9rem; }
+    a { color: var(--link); }
+    :focus-visible { outline: 3px solid var(--link); outline-offset: 2px; border-radius: 2px; }
+    main:focus { outline: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+               overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .skip { position: absolute; left: 8px; top: -64px; z-index: 10; padding: 8px 14px;
+            background: var(--surface); color: var(--fg); border: 2px solid var(--link);
+            border-radius: 8px; }
+    .skip:focus { top: 8px; }
+    .topnav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 16px;
+              font-size: 0.9rem; }
     .topnav a[aria-current="page"] { color: var(--fg); font-weight: 600; text-decoration: none; }
     .lang { margin-left: auto; }
-    .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--series-1);
+    .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--link);
                    text-decoration: underline; cursor: pointer; }
     .picker { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0 20px; }
     .picker select, .picker button { font: inherit; padding: 6px 10px; border-radius: 8px;
@@ -78,7 +91,8 @@
   </style>
 </head>
 <body>
-  <main>
+  <a class="skip" href="#main">{% trans "Skip to main content" %}</a>
+  <main id="main" tabindex="-1">
     <nav class="topnav" aria-label="{% trans 'Sections' %}">
       <a href="{% url 'analytics:dashboard' %}"{% if active == 'dashboard' %} aria-current="page"{% endif %}>{% trans "Dashboard" %}</a>
       <a href="{% url 'analytics:provinces' %}"{% if active == 'provinces' %} aria-current="page"{% endif %}>{% trans "Provinces" %}</a>

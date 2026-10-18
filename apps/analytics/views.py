@@ -51,7 +51,8 @@ def dashboard(request: HttpRequest) -> HttpResponse:
             Line(_("Policy rate"), "--series-1", [(p.date, p.policy) for p in rates]),
             Line(_("Core inflation"), "--series-2", [(p.date, p.core) for p in rates]),
             Line(_("Real rate"), "--series-3", [(p.date, p.real) for p in rates]),
-        ]
+        ],
+        label=_("Policy rate, core inflation and the real rate"),
     )
     unemployment_chart = bar_chart(
         [
@@ -70,7 +71,8 @@ def dashboard(request: HttpRequest) -> HttpResponse:
                 emphasis=r.geography == kpis.NATIONAL,
             )
             for r in unemployment
-        ]
+        ],
+        label=_("Unemployment rate by province"),
     )
     retail_chart = bar_chart(
         [
@@ -87,7 +89,8 @@ def dashboard(request: HttpRequest) -> HttpResponse:
                 emphasis=r.geography == kpis.NATIONAL,
             )
             for r in retail
-        ]
+        ],
+        label=_("Real retail sales growth by province"),
     )
     context = {
         "tiles": tiles,
@@ -158,13 +161,18 @@ def provinces(request: HttpRequest) -> HttpResponse:
                     )
                 )
             tile = _tile(title, geo, geo_points, canada_points)
+            canada_by_day = dict(canada_points)
             if tile:
                 tiles.append(tile)
             panels.append(
                 {
                     "title": title,
                     "note": note,
-                    "chart": line_chart(lines),
+                    "chart": line_chart(lines, label=f"{title}: {geography_name(geo)}"),
+                    "rows": [
+                        (day, value, canada_by_day.get(day))
+                        for day, value in reversed(geo_points[-HISTORY_MONTHS:])
+                    ],
                     "has_data": bool(geo_points),
                     "compare": geo != kpis.NATIONAL,
                 }

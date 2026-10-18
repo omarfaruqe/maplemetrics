@@ -14,50 +14,56 @@
     </ul>
 
     {% if rates %}
+    {% trans "Policy rate, core inflation and the real rate" as rates_title %}
     <section class="card">
-      <h2>{% trans "Policy rate, core inflation and the real rate" %}</h2>
+      <h2 id="rates-heading">{{ rates_title }}</h2>
       <p class="note">{% trans "Real rate = policy rate at month end minus CPI-trim. Below zero, monetary policy is stimulating." %}</p>
       <ul class="legend">
         <li><i style="background:var(--series-1)"></i>{% trans "Policy rate" %}</li>
         <li><i style="background:var(--series-2)"></i>{% trans "Core inflation" %}</li>
         <li><i style="background:var(--series-3)"></i>{% trans "Real rate" %}</li>
       </ul>
-      <div class="scroll">{{ rate_chart }}</div>
+      <div class="scroll" role="region" aria-labelledby="rates-heading" tabindex="0">{{ rate_chart }}</div>
       <details>
         <summary>{% trans "View as table (last 24 months)" %}</summary>
-        <div class="scroll"><table>
-          <thead><tr><th>{% trans "Month" %}</th><th class="num">{% trans "Policy rate" %}</th><th class="num">{% trans "Core inflation" %}</th><th class="num">{% trans "Real rate" %}</th></tr></thead>
-          <tbody>{% for p in rates %}<tr><td>{{ p.date|date:"Y-m" }}</td><td class="num">{{ p.policy|floatformat:2 }}</td><td class="num">{{ p.core|floatformat:2 }}</td><td class="num">{{ p.real|floatformat:2 }}</td></tr>{% endfor %}</tbody>
+        <div class="scroll" role="region" aria-labelledby="rates-table-caption" tabindex="0"><table>
+          <caption id="rates-table-caption" class="sr-only">{% blocktrans with title=rates_title %}{{ title }}, data table{% endblocktrans %}</caption>
+          <thead><tr><th scope="col">{% trans "Month" %}</th><th scope="col" class="num">{% trans "Policy rate" %}</th><th scope="col" class="num">{% trans "Core inflation" %}</th><th scope="col" class="num">{% trans "Real rate" %}</th></tr></thead>
+          <tbody>{% for p in rates %}<tr><th scope="row">{{ p.date|date:"Y-m" }}</th><td class="num">{{ p.policy|floatformat:2 }}</td><td class="num">{{ p.core|floatformat:2 }}</td><td class="num">{{ p.real|floatformat:2 }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>
     {% endif %}
 
     {% if unemployment %}
+    {% trans "Unemployment rate by province" as unemployment_title %}
     <section class="card">
-      <h2>{% trans "Unemployment rate by province" %}</h2>
+      <h2 id="unemployment-heading">{{ unemployment_title }}</h2>
       <p class="note">{% trans "Latest month, seasonally adjusted, 15 years and over. Canada is highlighted." %}</p>
-      <div class="scroll">{{ unemployment_chart }}</div>
+      <div class="scroll" role="region" aria-labelledby="unemployment-heading" tabindex="0">{{ unemployment_chart }}</div>
       <details>
         <summary>{% trans "View as table" %}</summary>
-        <div class="scroll"><table>
-          <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Rate (%)" %}</th><th class="num">{% trans "12 months earlier" %}</th><th class="num">{% trans "Change (pts)" %}</th></tr></thead>
-          <tbody>{% for r in unemployment %}<tr><td>{{ r.geography|geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
+        <div class="scroll" role="region" aria-labelledby="unemployment-table-caption" tabindex="0"><table>
+          <caption id="unemployment-table-caption" class="sr-only">{% blocktrans with title=unemployment_title %}{{ title }}, data table{% endblocktrans %}</caption>
+          <thead><tr><th scope="col">{% trans "Geography" %}</th><th scope="col">{% trans "Month" %}</th><th scope="col" class="num">{% trans "Rate (%)" %}</th><th scope="col" class="num">{% trans "12 months earlier" %}</th><th scope="col" class="num">{% trans "Change (pts)" %}</th></tr></thead>
+          <tbody>{% for r in unemployment %}<tr><th scope="row">{{ r.geography|geography }}</th><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>
     {% endif %}
 
     {% if retail %}
+    {% trans "Real retail sales growth by province" as retail_title %}
     <section class="card">
-      <h2>{% trans "Real retail sales growth by province" %}</h2>
+      <h2 id="retail-heading">{{ retail_title }}</h2>
       <p class="note">{% trans "Year over year: nominal retail sales growth deflated by the consumer price index. Red bars are declines." %}</p>
-      <div class="scroll">{{ retail_chart }}</div>
+      <div class="scroll" role="region" aria-labelledby="retail-heading" tabindex="0">{{ retail_chart }}</div>
       <details>
         <summary>{% trans "View as table" %}</summary>
-        <div class="scroll"><table>
-          <thead><tr><th>{% trans "Geography" %}</th><th>{% trans "Month" %}</th><th class="num">{% trans "Sales (%)" %}</th><th class="num">{% trans "Prices (%)" %}</th><th class="num">{% trans "Real (%)" %}</th></tr></thead>
-          <tbody>{% for r in retail %}<tr><td>{{ r.geography|geography }}</td><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
+        <div class="scroll" role="region" aria-labelledby="retail-table-caption" tabindex="0"><table>
+          <caption id="retail-table-caption" class="sr-only">{% blocktrans with title=retail_title %}{{ title }}, data table{% endblocktrans %}</caption>
+          <thead><tr><th scope="col">{% trans "Geography" %}</th><th scope="col">{% trans "Month" %}</th><th scope="col" class="num">{% trans "Sales (%)" %}</th><th scope="col" class="num">{% trans "Prices (%)" %}</th><th scope="col" class="num">{% trans "Real (%)" %}</th></tr></thead>
+          <tbody>{% for r in retail %}<tr><th scope="row">{{ r.geography|geography }}</th><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
     </section>

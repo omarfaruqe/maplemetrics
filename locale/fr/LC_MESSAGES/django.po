@@ -303,3 +303,24 @@ msgstr "sur douze mois, %(month)s"
 
 msgid "Year over year: nominal retail sales growth deflated by the consumer price index. Red bars are declines."
 msgstr "Sur douze mois : croissance nominale des ventes au détail, corrigée de l'indice des prix à la consommation. Les barres rouges indiquent un recul."
+
+msgid "Skip to main content"
+msgstr "Passer au contenu principal"
+
+msgid "Chart"
+msgstr "Graphique"
+
+msgid "%(name)s: %(first)s%(unit)s in %(first_month)s, %(last)s%(unit)s in %(last_month)s; lowest %(low)s%(unit)s, highest %(high)s%(unit)s."
+msgstr "%(name)s : %(first)s%(unit)s en %(first_month)s, %(last)s%(unit)s en %(last_month)s; minimum %(low)s%(unit)s, maximum %(high)s%(unit)s."
+
+msgid "Highest: %(label)s, %(value)s%(unit)s. Lowest: %(low_label)s, %(low_value)s%(unit)s."
+msgstr "Plus élevé : %(label)s, %(value)s%(unit)s. Plus bas : %(low_label)s, %(low_value)s%(unit)s."
+
+msgid "%(label)s: %(value)s%(unit)s."
+msgstr "%(label)s : %(value)s%(unit)s."
+
+msgid "Latest actual: %(actual)s%(unit)s in %(month)s. Forecast for %(end_month)s: %(value)s%(unit)s, with a %(level)d%% range from %(low)s%(unit)s to %(high)s%(unit)s."
+msgstr "Dernière valeur observée : %(actual)s%(unit)s en %(month)s. Prévision pour %(end_month)s : %(value)s%(unit)s, avec un intervalle de %(level)d %% allant de %(low)s%(unit)s à %(high)s%(unit)s."
+
+msgid "%(title)s, data table"
+msgstr "%(title)s, tableau de données"

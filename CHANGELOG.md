@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+### Accessibility
+- Fixed every issue an axe-core audit found: link and secondary text contrast in light mode, the
+  green chart series, charts with no accessible name, and a table area that keyboard users could
+  not scroll.
+- Every chart now has an accessible name and a spoken summary (highest and lowest, or start and
+  end values), in English and French.
+- The navigation wraps on narrow screens, so the page no longer scrolls sideways at 320 px.
+- Added a skip link, visible focus outlines, captions and header scopes on every table, and
+  keyboard-reachable scroll areas.
+- The province page now offers each chart as a table, like the dashboard and forecasts pages.
+- Selecting a province, indicator or geography no longer reloads the page on change; use the Show
+  button. Automatic submission disorients keyboard and screen reader users.
+- New tests: colour contrast of every theme colour, page structure in both languages, and an
+  opt-in browser audit with axe-core at desktop and 320 px widths in light and dark mode. CI runs
+  the audit in a new `accessibility` job.
+
 ## 1.0.0
 
 First release.

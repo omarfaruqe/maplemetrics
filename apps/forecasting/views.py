@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.utils.translation import gettext as _
 
 from apps.analytics import kpis
+from apps.core.localize import geography_name
 
 from .charts import forecast_chart
 from .models import Forecast
@@ -90,7 +91,14 @@ def forecasts(request: HttpRequest) -> HttpResponse:
             "final": rows[-1] if rows else None,
             "level": level,
             "verdict": verdict(forecast.vs_naive),
-            "chart": forecast_chart(history, rows, unit=unit, decimals=dp, level=level),
+            "chart": forecast_chart(
+                history,
+                rows,
+                unit=unit,
+                decimals=dp,
+                level=level,
+                label=f"{shown['title']}: {geography_name(geo)}",
+            ),
         }
     )
     return render(request, "forecasting/forecasts.html", context)
