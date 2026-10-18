@@ -16,6 +16,7 @@ from apps.core.tests.site_pages import render_pages, seed_site
 
 AXE_JS = os.environ.get("AXE_JS", "")
 TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]
+CHART_PAGES = ("dashboard", "provinces", "forecasts")
 VIEWPORTS = {"desktop": {"width": 1280, "height": 900}, "reflow": {"width": 320, "height": 800}}
 
 pytestmark = pytest.mark.skipif(not AXE_JS, reason="set AXE_JS to the path of axe.min.js to run")
@@ -88,7 +89,7 @@ def test_browser_reports_no_csp_violations_and_still_applies_styles(live_server,
                     problems.append(f"{name} [{scheme}]: {violations[:2]}")
                 if background == "rgba(0, 0, 0, 0)":
                     problems.append(f"{name} [{scheme}]: page styles were blocked")
-                if name != "freshness" and chart_stroke in ("none", "rgb(0, 0, 0)"):
+                if name in CHART_PAGES and chart_stroke in ("none", "rgb(0, 0, 0)"):
                     problems.append(f"{name} [{scheme}]: chart style attributes were blocked")
                 page.close()
             context.close()

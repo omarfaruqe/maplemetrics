@@ -12,6 +12,7 @@
       --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10);
       --series-1: #2a78d6; --series-2: #eb6834; --series-3: #12936a;
       --negative: #e34948; --emphasis: #184f95; --context: #898781;
+      --ok: #14683b; --warn: #8f5200; --bad: #a3262a;
     }
     @media (prefers-color-scheme: dark) {
       :root:where(:not([data-theme="light"])) {
@@ -21,6 +22,7 @@
         --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
         --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
         --negative: #e66767; --emphasis: #86b6ef; --context: #898781;
+        --ok: #5fd093; --warn: #f0b24a; --bad: #ff8a8d;
       }
     }
     :root[data-theme="dark"] {
@@ -30,6 +32,7 @@
       --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
       --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
       --negative: #e66767; --emphasis: #86b6ef; --context: #898781;
+      --ok: #5fd093; --warn: #f0b24a; --bad: #ff8a8d;
     }
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--fg);
@@ -85,6 +88,13 @@
     .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--grid);
                    color: var(--muted); font-size: 0.85rem; max-width: 80ch; }
     .site-footer p { margin: 0 0 8px; }
+    .badge { font-weight: 600; }
+    .badge.ok { color: var(--ok); }
+    .badge.warn { color: var(--warn); }
+    .badge.fail { color: var(--bad); }
+    .badge.ok::before { content: "\2713\00a0"; }
+    .badge.warn::before { content: "!\00a0"; }
+    .badge.fail::before { content: "\2715\00a0"; }
     .lang { margin-left: auto; }
     .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--link);
                    text-decoration: underline; cursor: pointer; }
@@ -101,6 +111,7 @@
       <a href="{% url 'analytics:provinces' %}"{% if active == 'provinces' %} aria-current="page"{% endif %}>{% trans "Provinces" %}</a>
       <a href="{% url 'forecasting:forecasts' %}"{% if active == 'forecasts' %} aria-current="page"{% endif %}>{% trans "Forecasts" %}</a>
       <a href="{% url 'core:freshness' %}">{% trans "Data freshness" %}</a>
+      <a href="{% url 'core:status' %}"{% if active == 'status' %} aria-current="page"{% endif %}>{% trans "Status" %}</a>
       <form class="lang" action="{% url 'set_language' %}" method="post">{% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
         {% if LANGUAGE_CODE|slice:":2" == "fr" %}<button type="submit" name="language" value="en" lang="en" title="English">English</button>{% else %}<button type="submit" name="language" value="fr" lang="fr" title="Français">Français</button>{% endif %}

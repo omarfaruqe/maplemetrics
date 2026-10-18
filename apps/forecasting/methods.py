@@ -69,9 +69,10 @@ def arima(train: np.ndarray, horizon: int) -> np.ndarray:
         warnings.simplefilter("ignore")
         for p in range(3):
             for q in range(3):
+                # A failed order is simply not a candidate, so skipping it is intended.
                 try:
                     fit = ARIMA(train, order=(p, 1, q), trend="t").fit()
-                except Exception:  # noqa: BLE001  # nosec B112 - a failed order is simply not a candidate
+                except Exception:  # noqa: BLE001  # nosec B112
                     continue
                 if np.isfinite(fit.aic) and fit.aic < best_aic:
                     best_aic, best_fit = fit.aic, fit

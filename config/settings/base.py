@@ -3,6 +3,8 @@
 import os
 from pathlib import Path
 
+from apps.core.logs import build_logging
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -36,6 +38,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "apps.core.middleware.RequestLogMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -123,6 +126,13 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+APP_VERSION = "1.0.0"
+
+# One JSON object per line is easiest to search in production; text is easier to read in a terminal.
+LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = env("LOG_FORMAT", "text")
+LOGGING = build_logging(LOG_FORMAT, LOG_LEVEL)
+
 API_THROTTLE_RATE = env("API_THROTTLE_RATE", "120/min")
 API_CACHE_SECONDS = int(env("API_CACHE_SECONDS", "300"))
 
@@ -144,6 +154,6 @@ SPECTACULAR_SETTINGS = {
         "Read-only access to Canadian economic data from the Bank of Canada and "
         "Statistics Canada, and the forecasts MapleMetrics builds from it."
     ),
-    "VERSION": "1.0.0",
+    "VERSION": APP_VERSION,
     "SERVE_INCLUDE_SCHEMA": False,
 }

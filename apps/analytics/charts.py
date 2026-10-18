@@ -197,7 +197,7 @@ def line_chart(
             )
     parts.append("</svg>")
     # Every text value above goes through escape(); see test_chart_escaping.py.
-    return mark_safe("".join(parts))  # noqa: S308  # nosec B703 B308
+    return mark_safe("".join(parts))  # noqa: S308  # nosec
 
 
 def bar_chart(
@@ -242,4 +242,4 @@ def bar_chart(
         )
     parts.append("</svg>")
     # Every text value above goes through escape(); see test_chart_escaping.py.
-    return mark_safe("".join(parts))  # noqa: S308  # nosec B703 B308
+    return mark_safe("".join(parts))  # noqa: S308  # nosec

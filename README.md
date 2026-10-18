@@ -37,7 +37,9 @@ warehouse, freshness monitoring), **data analysis** (KPIs and dashboards) and **
   See [Accessibility](docs/accessibility.md).
 - **Is hardened and scanned**: a strict Content-Security-Policy with no scripts, `bandit` and
   `pip-audit` in CI, and Dependabot for dependencies. See [Security](docs/security.md).
-- **Watches itself**: a freshness page and command flag any indicator whose data is stale.
+- **Watches itself**: a freshness page and command flag any indicator whose data is stale, a
+  status page and JSON endpoint report on the database, cache and refresh schedule, and the logs
+  are structured JSON with a request id on every line. See [Operations](docs/operations.md).
 
 ## Quick start
 
@@ -59,6 +61,7 @@ tables and backtests about 33 series, so expect several minutes. Then open:
 | Forecasts | http://localhost:8000/forecasts/ |
 | Data freshness | http://localhost:8000/freshness/ |
 | API documentation | http://localhost:8000/api/v1/docs/ |
+| System status | http://localhost:8000/status/ |
 | Health check | http://localhost:8000/health/ |
 
 `make up`, `make test`, `make lint`, `make fmt` and `make refresh` wrap the common commands.
@@ -139,6 +142,7 @@ docs/              Architecture, data dictionary, forecasting methods
 - [Data dictionary](docs/data-dictionary.md): every source, indicator and table
 - [Forecasting methods](docs/methods.md): how forecasts are built, scored and what they cannot do
 - [Accessibility](docs/accessibility.md): the standard it targets, what is tested and the known gaps
+- [Operations](docs/operations.md): the status page, structured logs and how to find a problem
 - [Security](docs/security.md): what is in place, how it is checked and what is not covered
 
 ## Honest limits

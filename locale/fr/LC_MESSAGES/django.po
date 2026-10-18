@@ -336,3 +336,84 @@ msgstr "Source : Banque du Canada, API Valet, utilisée selon les <a href=\"%(ur
 
 msgid "Reference dates for each series are on the <a href=\"%(url)s\">data freshness</a> page. Forecasts are statistical projections, not advice."
 msgstr "Les dates de référence de chaque série figurent sur la page <a href=\"%(url)s\">Fraîcheur des données</a>. Les prévisions sont des projections statistiques, et non des conseils."
+
+msgid "%(count)d forecasts, newest built %(when)s."
+msgstr "%(count)d prévisions, la plus récente construite le %(when)s."
+
+msgid "%(fresh)d of %(total)d indicators are up to date; %(stale)d stale, %(empty)d empty."
+msgstr "%(fresh)d indicateurs sur %(total)d sont à jour; %(stale)d périmés, %(empty)d vides."
+
+msgid "%(when)s (%(hours)d hours ago)."
+msgstr "%(when)s (il y a %(hours)d heures)."
+
+msgid "All %(total)d indicators are up to date."
+msgstr "Les %(total)d indicateurs sont à jour."
+
+msgid "All systems working"
+msgstr "Tout fonctionne"
+
+msgid "Attention"
+msgstr "À surveiller"
+
+msgid "Cache"
+msgstr "Cache"
+
+msgid "Check"
+msgstr "Vérification"
+
+msgid "Checks"
+msgstr "Vérifications"
+
+msgid "Database"
+msgstr "Base de données"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Failing"
+msgstr "En panne"
+
+msgid "Indicator freshness"
+msgstr "Fraîcheur des indicateurs"
+
+msgid "Last data load"
+msgstr "Dernier chargement des données"
+
+msgid "No data loaded yet."
+msgstr "Aucune donnée chargée pour le moment."
+
+msgid "No forecasts built yet."
+msgstr "Aucune prévision construite pour le moment."
+
+msgid "Not reachable."
+msgstr "Inaccessible."
+
+msgid "Nothing has been loaded yet."
+msgstr "Rien n'a encore été chargé."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Per-indicator detail is on the <a href=\"%(url)s\">data freshness</a> page."
+msgstr "Le détail par indicateur se trouve sur la page <a href=\"%(url)s\">Fraîcheur des données</a>."
+
+msgid "Responding in %(ms)s ms."
+msgstr "Répond en %(ms)s ms."
+
+msgid "Something essential is not working"
+msgstr "Un élément essentiel ne fonctionne pas"
+
+msgid "System checks"
+msgstr "Vérifications du système"
+
+msgid "System status"
+msgstr "État du système"
+
+msgid "The same information for monitoring tools is at"
+msgstr "Les mêmes informations pour les outils de surveillance sont à l'adresse"
+
+msgid "Version %(version)s. Checked %(when)s."
+msgstr "Version %(version)s. Vérifié le %(when)s."
+
+msgid "Working, with something to look at"
+msgstr "Fonctionne, avec un point à examiner"

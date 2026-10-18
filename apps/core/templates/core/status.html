@@ -1,0 +1,34 @@
+{% extends "analytics/base.html" %}{% load i18n %}
+{% block title %}{% trans "System status" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "System status" %}</h1>
+    <p class="lead">
+      {% if overall == "ok" %}<span class="badge ok">{% trans "All systems working" %}</span>
+      {% elif overall == "attention" %}<span class="badge warn">{% trans "Working, with something to look at" %}</span>
+      {% else %}<span class="badge fail">{% trans "Something essential is not working" %}</span>{% endif %}
+    </p>
+    <p class="note">
+      {% blocktrans with version=version when=time|date:"Y-m-d H:i" %}Version {{ version }}. Checked {{ when }}.{% endblocktrans %}
+      {% trans "The same information for monitoring tools is at" %} <a href="{% url 'core:status_json' %}">status.json</a>.
+    </p>
+
+    <section class="card">
+      <h2 id="checks-heading">{% trans "Checks" %}</h2>
+      <div class="scroll" role="region" aria-labelledby="checks-heading" tabindex="0">
+        <table>
+          <caption class="sr-only">{% trans "System checks" %}</caption>
+          <thead><tr><th scope="col">{% trans "Check" %}</th><th scope="col">{% trans "Status" %}</th><th scope="col">{% trans "Details" %}</th></tr></thead>
+          <tbody>
+            {% for check in checks %}
+            <tr>
+              <th scope="row">{{ check.title }}</th>
+              <td><span class="badge {{ check.status }}">{% if check.status == "ok" %}{% trans "OK" %}{% elif check.status == "warn" %}{% trans "Attention" %}{% else %}{% trans "Failing" %}{% endif %}</span></td>
+              <td>{{ check.message }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">{% blocktrans with url=freshness_url %}Per-indicator detail is on the <a href="{{ url }}">data freshness</a> page.{% endblocktrans %}</p>
+    </section>
+{% endblock %}

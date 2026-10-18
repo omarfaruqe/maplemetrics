@@ -8,4 +8,6 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("health/", views.health, name="health"),
     path("freshness/", views.freshness, name="freshness"),
+    path("status/", views.status, name="status"),
+    path("status.json", views.status_json, name="status_json"),
 ]

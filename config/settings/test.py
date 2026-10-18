@@ -4,7 +4,7 @@ import os
 
 from .base import *  # noqa: F401,F403
 
-SECRET_KEY = "test-key"  # nosec B105 - tests only
+SECRET_KEY = "test-key"  # nosec B105
 DEBUG = False
 ALLOWED_HOSTS = ["testserver", "localhost"]
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

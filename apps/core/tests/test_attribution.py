@@ -2,7 +2,7 @@
 
 import pytest
 
-from apps.core.tests.site_pages import render_pages, seed_site
+from apps.core.tests.site_pages import page_urls, render_pages, seed_site
 
 REQUIRED = {
     "en": [
@@ -29,7 +29,7 @@ def pages(client, db):
 
 
 def test_every_page_credits_both_sources_in_its_language(pages):
-    assert len(pages) == 8
+    assert len(pages) == 2 * len(page_urls())
     for name, html in pages.items():
         language = name.split("-")[1]
         assert html.count("<footer") == 1, name

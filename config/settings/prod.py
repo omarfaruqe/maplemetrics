@@ -2,10 +2,12 @@
 
 import re
 
-from .base import *  # noqa: F401,F403
-from .base import SECRET_KEY, URL_PREFIX, env_bool
+from apps.core.logs import build_logging
 
-if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover  # nosec B105 - a guard
+from .base import *  # noqa: F401,F403
+from .base import LOG_LEVEL, SECRET_KEY, URL_PREFIX, env, env_bool
+
+if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover  # nosec B105
     raise RuntimeError("Set DJANGO_SECRET_KEY in production.")
 
 # HTTPS is the default. Set DJANGO_HTTPS=false only for a plain-HTTP deployment
@@ -29,3 +31,6 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 # Joining the browser HSTS preload list is hard to undo, so it stays a deliberate, later decision.
 SILENCED_SYSTEM_CHECKS = ["security.W021"]
+
+# Structured logs by default in production; set LOG_FORMAT=text to read them in a terminal.
+LOGGING = build_logging(env("LOG_FORMAT", "json"), LOG_LEVEL)

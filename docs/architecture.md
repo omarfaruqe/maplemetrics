@@ -65,3 +65,5 @@ Three containers run in Docker Compose: `web` (Gunicorn serving Django), `db` (P
 - **Smoke test**: CI builds the image, starts the full stack and waits for `/health/`.
 - **Security**: `bandit` and `pip-audit` run in CI and weekly; tests check the Content-Security-Policy,
   that charts escape text, and that pages contain no scripts. See [Security](security.md).
+- **Observability**: `/status/` and `/status.json` check the database, cache and refresh schedule;
+  logs are JSON with a request id. See [Operations](operations.md).

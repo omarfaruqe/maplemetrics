@@ -35,7 +35,7 @@ def palette(block_start: str) -> dict[str, str]:
 
 LIGHT = palette(":root {")
 DARK = palette(':root[data-theme="dark"] {')
-TEXT = ("fg", "muted", "faint", "link")
+TEXT = ("fg", "muted", "faint", "link", "ok", "warn", "bad")
 GRAPHICS = ("series-1", "series-2", "series-3", "negative", "emphasis", "context")
 
 

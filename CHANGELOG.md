@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Operations
+- New `/status/` page (English and French) and `/status.json` endpoint. They check the database and
+  cache, how many indicators are up to date, when data was last loaded (a stopped daily refresh
+  shows up as a warning) and the forecasts. A failed database or cache answers 503 so a monitor
+  can alert on it. The pages are never cached and expose no hostnames or secrets.
+- Structured logging: one JSON line per event in production, readable text in development
+  (`LOG_FORMAT`, `LOG_LEVEL`). Each request gets an id that appears in every log line it causes and
+  in the `X-Request-ID` header; a trustworthy id from a proxy is reused.
+- The daily refresh now logs its start, each step with its duration, any failure with the
+  traceback, and its finish.
+- Added `docs/operations.md`, and a Status link in the navigation.
+
 ### Security
 - Added a Content-Security-Policy and a Permissions-Policy. The site allows no scripts and no
   outside origins; inline styles are allowed only through a per-request nonce. The admin and the
