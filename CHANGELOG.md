@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Project management
+- Added `docs/project/`: charter, roadmap and prioritised backlog, sprint reviews with lessons
+  learned, a risk register, a decision log (11 decisions) and a one-page case study. All are
+  written from the repository's own history.
+
 ### Deployment
 - Static files are now served by WhiteNoise. Before this, the production container collected and
   served nothing, so the Django admin would have appeared without any styling. The Docker build now

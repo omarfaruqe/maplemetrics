@@ -144,6 +144,7 @@ docs/              Architecture, data dictionary, forecasting methods
 - [Data dictionary](docs/data-dictionary.md): every source, indicator and table
 - [Forecasting methods](docs/methods.md): how forecasts are built, scored and what they cannot do
 - [Accessibility](docs/accessibility.md): the standard it targets, what is tested and the known gaps
+- [Project management](docs/project/README.md): charter, backlog, sprint reviews, risk register, decision log and a case study
 - [Operations](docs/operations.md): the status page, structured logs and how to find a problem
 - [Security](docs/security.md): what is in place, how it is checked and what is not covered
 
