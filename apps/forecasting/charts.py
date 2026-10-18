@@ -124,4 +124,5 @@ def forecast_chart(
             f"<title>{escape(tip)}</title></circle>"
         )
     parts.append("</svg>")
-    return mark_safe("".join(parts))  # noqa: S308
+    # Every text value above goes through escape(); see test_chart_escaping.py.
+    return mark_safe("".join(parts))  # noqa: S308  # nosec B703 B308

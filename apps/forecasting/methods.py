@@ -71,7 +71,7 @@ def arima(train: np.ndarray, horizon: int) -> np.ndarray:
             for q in range(3):
                 try:
                     fit = ARIMA(train, order=(p, 1, q), trend="t").fit()
-                except Exception:  # noqa: BLE001 - a failed order is simply not a candidate
+                except Exception:  # noqa: BLE001  # nosec B112 - a failed order is simply not a candidate
                     continue
                 if np.isfinite(fit.aic) and fit.aic < best_aic:
                     best_aic, best_fit = fit.aic, fit

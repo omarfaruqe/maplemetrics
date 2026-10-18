@@ -35,6 +35,8 @@ warehouse, freshness monitoring), **data analysis** (KPIs and dashboards) and **
 - **Is built to be accessible**: it targets WCAG 2.2 AA, with a skip link, keyboard-reachable
   charts and tables, a text description for every chart, and an automated axe-core audit in CI.
   See [Accessibility](docs/accessibility.md).
+- **Is hardened and scanned**: a strict Content-Security-Policy with no scripts, `bandit` and
+  `pip-audit` in CI, and Dependabot for dependencies. See [Security](docs/security.md).
 - **Watches itself**: a freshness page and command flag any indicator whose data is stale.
 
 ## Quick start
@@ -104,6 +106,7 @@ source .venv/bin/activate
 pip install -r requirements-dev.txt
 pytest
 ruff check . && ruff format --check .
+make audit
 ```
 
 Tests use in-memory SQLite unless `POSTGRES_HOST` is set; CI runs them against PostgreSQL 16 with
@@ -136,6 +139,7 @@ docs/              Architecture, data dictionary, forecasting methods
 - [Data dictionary](docs/data-dictionary.md): every source, indicator and table
 - [Forecasting methods](docs/methods.md): how forecasts are built, scored and what they cannot do
 - [Accessibility](docs/accessibility.md): the standard it targets, what is tested and the known gaps
+- [Security](docs/security.md): what is in place, how it is checked and what is not covered
 
 ## Honest limits
 

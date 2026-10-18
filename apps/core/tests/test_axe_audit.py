@@ -60,3 +60,37 @@ def test_no_axe_violations_on_any_page(client, db, tmp_path):
                 context.close()
         browser.close()
     assert not problems, "\n".join(problems)
+
+
+def test_browser_reports_no_csp_violations_and_still_applies_styles(live_server, transactional_db):
+    """The strict Content-Security-Policy must not break the pages in a real browser."""
+    from apps.core.tests.site_pages import page_urls
+
+    sync_api = pytest.importorskip("playwright.sync_api")
+    seed_site()
+    problems = []
+    with sync_api.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        for scheme in ("light", "dark"):
+            context = browser.new_context(color_scheme=scheme)
+            for name, url in page_urls().items():
+                page = context.new_page()
+                messages = []
+                page.on("console", lambda msg, messages=messages: messages.append(msg.text))
+                page.goto(live_server.url + url)
+                background = page.evaluate("getComputedStyle(document.body).backgroundColor")
+                chart_stroke = page.evaluate(
+                    "(() => { const p = document.querySelector('svg path.line');"
+                    " return p ? getComputedStyle(p).stroke : 'none'; })()"
+                )
+                violations = [m for m in messages if "Content Security Policy" in m]
+                if violations:
+                    problems.append(f"{name} [{scheme}]: {violations[:2]}")
+                if background == "rgba(0, 0, 0, 0)":
+                    problems.append(f"{name} [{scheme}]: page styles were blocked")
+                if name != "freshness" and chart_stroke in ("none", "rgb(0, 0, 0)"):
+                    problems.append(f"{name} [{scheme}]: chart style attributes were blocked")
+                page.close()
+            context.close()
+        browser.close()
+    assert not problems, "\n".join(problems)

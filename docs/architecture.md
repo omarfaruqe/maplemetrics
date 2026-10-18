@@ -63,3 +63,5 @@ Three containers run in Docker Compose: `web` (Gunicorn serving Django), `db` (P
 - **Translations**: a test fails on any untranslated string or stale compiled catalog.
 - **Deployment**: a test runs `check --deploy` on the production settings.
 - **Smoke test**: CI builds the image, starts the full stack and waits for `/health/`.
+- **Security**: `bandit` and `pip-audit` run in CI and weekly; tests check the Content-Security-Policy,
+  that charts escape text, and that pages contain no scripts. See [Security](security.md).

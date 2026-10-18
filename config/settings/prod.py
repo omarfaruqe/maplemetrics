@@ -5,7 +5,7 @@ import re
 from .base import *  # noqa: F401,F403
 from .base import SECRET_KEY, URL_PREFIX, env_bool
 
-if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover
+if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover  # nosec B105 - a guard
     raise RuntimeError("Set DJANGO_SECRET_KEY in production.")
 
 # HTTPS is the default. Set DJANGO_HTTPS=false only for a plain-HTTP deployment

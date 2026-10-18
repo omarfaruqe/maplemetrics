@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Security
+- Added a Content-Security-Policy and a Permissions-Policy. The site allows no scripts and no
+  outside origins; inline styles are allowed only through a per-request nonce. The admin and the
+  Swagger UI documentation get their own, looser policies.
+- CI has a new `security` job running `bandit` and `pip-audit`, and a weekly scheduled run so new
+  advisories are found without a code change.
+- Dependabot opens weekly pull requests for Python packages, GitHub Actions and the Docker image.
+- GitHub Actions moved to current major versions (`checkout`, `setup-python`, `setup-node`).
+- Reviewed every bandit finding: three `mark_safe` calls in the chart code (now covered by escaping
+  tests), one deliberate `except/continue` in the ARIMA search, and two non-password strings.
+- Added `SECURITY.md` and `docs/security.md`, and a `make audit` command.
+- New tests for the headers, the nonce, chart escaping, and (in the browser audit) that the policy
+  does not block the pages' own styles.
+
 ### Data attribution
 - Every page now ends with a footer crediting Statistics Canada (Open Licence, with the required
   "adapted from" and no-endorsement notices) and the Bank of Canada (source credit, adapted

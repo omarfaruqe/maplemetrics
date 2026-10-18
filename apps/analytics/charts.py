@@ -196,7 +196,8 @@ def line_chart(
                 f"<title>{escape(line.name)}, {day:%Y-%m}: {_fmt(value, 2)}{unit}</title></circle>"
             )
     parts.append("</svg>")
-    return mark_safe("".join(parts))  # noqa: S308
+    # Every text value above goes through escape(); see test_chart_escaping.py.
+    return mark_safe("".join(parts))  # noqa: S308  # nosec B703 B308
 
 
 def bar_chart(
@@ -240,4 +241,5 @@ def bar_chart(
             f'class="value">{_fmt(bar.value, decimals)}{unit}</text>'
         )
     parts.append("</svg>")
-    return mark_safe("".join(parts))  # noqa: S308
+    # Every text value above goes through escape(); see test_chart_escaping.py.
+    return mark_safe("".join(parts))  # noqa: S308  # nosec B703 B308
