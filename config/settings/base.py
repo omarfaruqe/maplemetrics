@@ -99,7 +99,24 @@ TIME_ZONE = "America/Toronto"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+# Serving under a sub-path (for example https://host/maplemetrics/) when several projects share one
+# server. The reverse proxy strips the prefix before the request reaches Django; Django adds it
+# back to every URL it generates. Leave empty to serve from the root.
+URL_PREFIX = env("DJANGO_URL_PREFIX").strip("/")
+
+if URL_PREFIX:
+    FORCE_SCRIPT_NAME = f"/{URL_PREFIX}"
+    STATIC_URL = f"/{URL_PREFIX}/static/"
+    # Cookies are scoped to the host, not the port, so projects on the same IP address would
+    # otherwise overwrite each other's session, CSRF and language cookies.
+    SESSION_COOKIE_NAME = f"{URL_PREFIX}_sessionid"
+    SESSION_COOKIE_PATH = f"/{URL_PREFIX}/"
+    CSRF_COOKIE_NAME = f"{URL_PREFIX}_csrftoken"
+    CSRF_COOKIE_PATH = f"/{URL_PREFIX}/"
+    LANGUAGE_COOKIE_NAME = f"{URL_PREFIX}_language"
+    LANGUAGE_COOKIE_PATH = f"/{URL_PREFIX}/"
+else:
+    STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

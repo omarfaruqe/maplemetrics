@@ -1,7 +1,9 @@
 """Production settings."""
 
+import re
+
 from .base import *  # noqa: F401,F403
-from .base import SECRET_KEY, env_bool
+from .base import SECRET_KEY, URL_PREFIX, env_bool
 
 if SECRET_KEY == "insecure-dev-key-change-me":  # pragma: no cover
     raise RuntimeError("Set DJANGO_SECRET_KEY in production.")
@@ -13,7 +15,9 @@ HTTPS = env_bool("DJANGO_HTTPS", True)
 DEBUG = False
 SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", HTTPS)
 # The container healthcheck calls /health/ over plain HTTP, so it must not be redirected.
-SECURE_REDIRECT_EXEMPT = [r"^health/$"]
+# Django matches this against the full path, which includes the URL prefix when one is set.
+_PREFIX_PATTERN = f"(?:{re.escape(URL_PREFIX)}/)?" if URL_PREFIX else ""
+SECURE_REDIRECT_EXEMPT = [rf"^{_PREFIX_PATTERN}health/$"]
 SESSION_COOKIE_SECURE = HTTPS
 CSRF_COOKIE_SECURE = HTTPS
 SECURE_HSTS_SECONDS = 31536000 if HTTPS else 0
