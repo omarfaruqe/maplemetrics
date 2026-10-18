@@ -16,7 +16,7 @@ gantt
     Sprint 4 API, French, hardening:done, s4, 2026-10-13, 1d
     Sprint 5 Docs and release      :done, s5, 2026-10-13, 1d
     section Release 1.1
-    Hosting (HTTP mode, URL prefix):done, h1, 2026-10-16, 2d
+    Hosting (HTTP mode, URL prefix):done, h1, 2026-10-16, 3d
     Quality and trust increments   :done, q1, 2026-10-17, 1d
     Project documents              :active, p1, 2026-10-17, 1d
 ```
@@ -44,7 +44,8 @@ gantt
 | Security | Content-Security-Policy, `bandit`, `pip-audit`, Dependabot, updated Actions | `cf6b0a2` |
 | Observability | `/status/` page and `/status.json`, structured JSON logs with request ids | `3e6b0e3` |
 | Static files | WhiteNoise, build-time `collectstatic` | `9b6fbb5` |
-| Project documents | This folder | (this commit) |
+| Project documents | This folder | `docs/project/` |
+| Live hosting | Site reachable from outside at `/maplemetrics/` through the shared gateway; first full data refresh loaded 8 of 8 indicators and 33 forecasts; status page all `ok` (verified 2026-10-18) | (server; no commit) |
 
 ## Open backlog
 
@@ -52,8 +53,8 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 
 | ID | Item | Priority | Effort | Why it matters | Status |
 |---|---|---|---|---|---|
-| B-01 | Make the server reachable from the internet on port 80 and confirm the demo URL loads | Must | S | The charter's last success criterion; a live demo is the best proof of the project | Blocked: diagnostics from the server and from outside are needed |
-| B-02 | Confirm the first full data refresh loaded and the status page reads "ok" | Must | S | Proves the pipeline works in production | Open |
+| B-01 | Make the server reachable from the internet on port 80 and confirm the demo URL loads | Must | S | The charter's last success criterion; a live demo is the best proof of the project | **Done 2026-10-18.** Verified from outside with `curl` (redirect to the dashboard, through the gateway) and `/status.json` |
+| B-02 | Confirm the first full data refresh loaded and the status page reads "ok" | Must | S | Proves the pipeline works in production | **Done 2026-10-18.** Status `ok`: 8 of 8 indicators fresh, 33 forecasts, last load minutes old |
 | B-03 | Set up and verify the daily cron refresh and backup job on the server | Must | S | Without it the data goes stale and the status page warns | Open |
 | B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | Open |
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |

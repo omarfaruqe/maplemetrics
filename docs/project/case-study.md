@@ -3,7 +3,7 @@
 **A bilingual Canadian economic data service with forecasts that show how far to trust them.**
 Owned and directed by one person over nine days (2026-10-09 to 2026-10-17), built with an AI
 development assistant (see below).
-Source: https://github.com/omarfaruqe/maplemetrics
+Source: https://github.com/omarfaruqe/maplemetrics. Live demo: http://103.99.176.180/maplemetrics/
 
 ## The problem
 
@@ -69,8 +69,8 @@ register. The [charter](charter.md), [backlog](backlog.md), [sprint reviews](spr
 
 ## Limits, stated plainly
 
-- The demo server is not yet reachable from the internet, and it uses plain HTTP until a domain
-  exists. Both are tracked in the backlog.
+- The demo runs over plain HTTP until a domain exists, so traffic is not encrypted. That is
+  acceptable for public data and is tracked in the backlog.
 - Backups exist but a restore has not been tested yet.
 - Accessibility was checked with automated tools, not with people who use assistive technology.
 - The French text has not been reviewed by a professional translator.

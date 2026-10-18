@@ -1,7 +1,7 @@
 # Risk register
 
 Scores are likelihood (1 to 5) times impact (1 to 5), so 1 to 25. Reviewed at every sprint review.
-Last review: 2026-10-17.
+Last review: 2026-10-18.
 
 **Rating:** 15 and above is high, 8 to 14 is medium, below 8 is low.
 
@@ -14,9 +14,9 @@ Last review: 2026-10-17.
 | R-05 | A dependency has a known vulnerability | 3 | 4 | 12 | `pip-audit` on every push and weekly; Dependabot pull requests; bounded version ranges | Low | Mitigated |
 | R-06 | Insecure code or missing hardening reaches production | 2 | 5 | 10 | `bandit` in CI; Content-Security-Policy; `check --deploy` test; production refuses the development secret key; port bound to localhost by default | Low | Mitigated |
 | R-07 | Traffic to the demo is unencrypted because the server is reached by IP address over HTTP | 5 | 2 | 10 | Only public data is served and there are no accounts; documented in the security notes; HTTPS settings are ready (B-05) | Medium | Accepted until a domain exists |
-| R-08 | Data goes stale unnoticed (cron stops, server restarts, source outage) | 3 | 3 | 9 | Status page warns after three days without a load; `/status.json` for an external monitor; refresh logs each step | Medium | Partly mitigated. Cron and monitor are not yet verified on the server (B-03) |
+| R-08 | Data goes stale unnoticed (cron stops, server restarts, source outage) | 3 | 3 | 9 | Status page warns after three days without a load; `/status.json` for an external monitor; refresh logs each step | Medium | Partly mitigated. A first manual refresh worked and the status page read `ok` on 2026-10-18. The daily cron and an external monitor are not yet verified (B-03) |
 | R-09 | The database is lost and the backup cannot be restored | 2 | 5 | 10 | A daily backup script is provided but not yet confirmed running; data can be rebuilt from public sources in minutes | Medium | **Open.** The restore has never been tested (B-04). Until then the backup is an assumption |
-| R-10 | The demo is not reachable from outside, so the project cannot be shown live | 4 | 3 | 12 | Server and containers are healthy locally; diagnosis of the network path is in progress | High until fixed | **Open** (B-01) |
+| R-10 | The demo is not reachable from outside, so the project cannot be shown live | 4 | 3 | 12 | Reachability verified from outside on 2026-10-18; `/status.json` can be watched by an external monitor | Low | **Closed** 2026-10-18 (B-01). Reopens if the server or gateway changes |
 | R-11 | Accessibility regressions as pages change | 3 | 3 | 9 | Contrast and structure tests on every run; axe-core audit in CI in both languages, both themes, desktop and 320 px | Low | Mitigated. Real-user testing (B-15) has not happened |
 | R-12 | Untranslated or inconsistent French | 3 | 3 | 9 | A failing test on any untranslated string or stale compiled catalog | Low | Mitigated. The translations have not been reviewed by a professional translator |
 | R-13 | Licence terms are breached or misattributed | 2 | 4 | 8 | Notices required by the Statistics Canada Open Licence and the Bank of Canada terms are in the footer on every page, checked by tests; no logos used; "not endorsed" wording | Low | Mitigated |
@@ -27,7 +27,7 @@ Last review: 2026-10-17.
 
 ## Reading the register
 
-- **High right now:** R-10 only. Fixing it is the top backlog item.
+- **High right now:** none. R-10 was closed on 2026-10-18.
 - **Open and not yet proven:** R-09 (restore) and R-08 (cron on the server). These are cheap to
   close, and they are what turns "designed" into "operated".
 - **Accepted on purpose:** R-07 and R-14, with the reason written next to them.

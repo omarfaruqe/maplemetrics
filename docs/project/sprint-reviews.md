@@ -129,6 +129,10 @@ helper blocked image pulls; the web port was published twice; `127.0.0.1` had to
 container's health check could pass. Also, the CI lint check failed again after pasted
 files differed in whitespace (`67f5b10`).
 
+**Outcome.** On 2026-10-18 the site was reachable from outside through the shared gateway, and the
+status page, read from the owner's machine over the internet, reported every check `ok` after the
+first full refresh: 8 of 8 indicators fresh, 33 forecasts.
+
 **Changed.** Each fix is documented, and the base Compose file now binds to localhost so a
 server cannot accidentally expose the app. Pasting code between machines proved error-prone, so
 files are now written directly into the working folder and compared by checksum.

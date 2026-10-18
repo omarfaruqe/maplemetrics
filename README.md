@@ -1,5 +1,7 @@
 # MapleMetrics
 
+**Live demo:** http://103.99.176.180/maplemetrics/ (plain HTTP; public data only). System status: [/maplemetrics/status/](http://103.99.176.180/maplemetrics/status/).
+
 [![CI](https://github.com/omarfaruqe/maplemetrics/actions/workflows/ci.yml/badge.svg)](https://github.com/omarfaruqe/maplemetrics/actions/workflows/ci.yml)
 
 Canadian economic data, from ingestion to forecasts, in one Django project. MapleMetrics pulls

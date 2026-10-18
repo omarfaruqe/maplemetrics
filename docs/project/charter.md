@@ -7,7 +7,7 @@
 | **Repository** | https://github.com/omarfaruqe/maplemetrics |
 | **Started** | 2026-10-09 |
 | **First release** | v1.0.0, 2026-10-13 |
-| **Status (2026-10-17)** | Released and being hardened for hosting. See the [backlog](backlog.md) |
+| **Status (2026-10-18)** | Released and live at http://103.99.176.180/maplemetrics/ (plain HTTP). See the [backlog](backlog.md) |
 
 ## Purpose
 
@@ -49,7 +49,7 @@ operations); these project-management documents.
 
 ## Success criteria and results
 
-| Criterion | Target | Result on 2026-10-17 | Evidence |
+| Criterion | Target | Result on 2026-10-18 | Evidence |
 |---|---|---|---|
 | Automated test coverage | At least 80% (build fails below) | 98.8% | `pytest` output; CI `test` job |
 | Tests passing | All | 222 passed, 2 browser audits run in CI | CI |
@@ -58,7 +58,7 @@ operations); these project-management documents.
 | Known vulnerable dependencies | None | None found | CI `security` job (`pip-audit`) |
 | Translation completeness | No untranslated string | Enforced by a failing test | `test_i18n.py` |
 | Runs from a clean checkout | `docker compose up` works | Yes | CI `docker` job smoke test |
-| Publicly reachable demo | A URL anyone can open | **Not yet.** Runs on the server; access from outside is still being resolved | [Backlog](backlog.md) B-01 |
+| Publicly reachable demo | A URL anyone can open | Yes, over plain HTTP. On 2026-10-18 the status page, read from outside the server, reported all checks `ok`: 8 of 8 indicators fresh, 33 forecasts | `/status.json` |
 
 ## Constraints
 
