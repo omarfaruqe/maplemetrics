@@ -2,6 +2,8 @@
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py"]
 addopts = "-ra --strict-markers --cov=apps --cov-report=term-missing --cov-fail-under=80"
+# WhiteNoise warns when staticfiles/ has not been collected yet, which is normal in tests.
+filterwarnings = ["ignore:No directory at:UserWarning"]
 
 [tool.coverage.run]
 omit = ["*/tests/*", "*/migrations/*"]

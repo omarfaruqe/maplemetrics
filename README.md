@@ -35,6 +35,8 @@ warehouse, freshness monitoring), **data analysis** (KPIs and dashboards) and **
 - **Is built to be accessible**: it targets WCAG 2.2 AA, with a skip link, keyboard-reachable
   charts and tables, a text description for every chart, and an automated axe-core audit in CI.
   See [Accessibility](docs/accessibility.md).
+- **Serves its own static files** with WhiteNoise (hashed and compressed), so the container needs
+  no separate web server.
 - **Is hardened and scanned**: a strict Content-Security-Policy with no scripts, `bandit` and
   `pip-audit` in CI, and Dependabot for dependencies. See [Security](docs/security.md).
 - **Watches itself**: a freshness page and command flag any indicator whose data is stale, a

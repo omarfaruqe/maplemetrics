@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "apps.core.middleware.RequestLogMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -123,6 +124,9 @@ if URL_PREFIX:
 else:
     STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# WhiteNoise serves the collected files from the app itself, so no separate web server is needed.
+# In development it also finds them in place, so `runserver` and tests need no collectstatic.
+WHITENOISE_USE_FINDERS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

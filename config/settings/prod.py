@@ -32,5 +32,14 @@ X_FRAME_OPTIONS = "DENY"
 # Joining the browser HSTS preload list is hard to undo, so it stays a deliberate, later decision.
 SILENCED_SYSTEM_CHECKS = ["security.W021"]
 
+# Static files are collected at image build time with a content hash in each name, so browsers
+# can keep them indefinitely and a changed file always gets a new address. They are also
+# pre-compressed. Development and tests keep the plain storage and need no collectstatic.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
+WHITENOISE_USE_FINDERS = False
+
 # Structured logs by default in production; set LOG_FORMAT=text to read them in a terminal.
 LOGGING = build_logging(env("LOG_FORMAT", "json"), LOG_LEVEL)

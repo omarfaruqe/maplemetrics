@@ -19,8 +19,8 @@ _SAFE_ID = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
 class RequestLogMiddleware:
     """Gives each request an id, times it and logs the outcome.
 
-    Healthcheck calls come every few seconds, so they are logged at DEBUG to keep real traffic
-    visible.
+    Healthcheck calls come every few seconds and a page of the admin fetches a dozen static files,
+    so those are logged at DEBUG to keep real traffic visible.
     """
 
     def __init__(self, get_response):
@@ -36,7 +36,7 @@ class RequestLogMiddleware:
             response = self.get_response(request)
             duration_ms = round((time.perf_counter() - started) * 1000, 1)
             level = logging.ERROR if response.status_code >= 500 else logging.INFO
-            if request.path_info == "/health/":
+            if request.path_info == "/health/" or request.path_info.startswith("/static/"):
                 level = logging.DEBUG
             logger.log(
                 level,

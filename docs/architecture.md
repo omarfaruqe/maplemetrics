@@ -53,6 +53,7 @@ Three containers run in Docker Compose: `web` (Gunicorn serving Django), `db` (P
 | Translation catalog compiled by a small Python tool | No need for GNU gettext on laptops, in Docker or in CI; a test keeps the compiled file honest |
 | Settings split into base, dev, prod and test | Production refuses to start with the development secret; tests run on SQLite for speed or PostgreSQL in CI |
 | Public API without keys, with rate limits and cache headers | The data is public and the API is read-only, so keys would add friction without adding safety |
+| Static files served by WhiteNoise, collected when the image is built | The only static files are the admin's. The app serves them itself, hashed and compressed, so there is no extra web server to configure and the image works the same behind any proxy or URL prefix |
 
 ## Quality gates
 

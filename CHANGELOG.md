@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Deployment
+- Static files are now served by WhiteNoise. Before this, the production container collected and
+  served nothing, so the Django admin would have appeared without any styling. The Docker build now
+  runs `collectstatic`, and production uses hashed, pre-compressed files that browsers can cache
+  indefinitely.
+- Works behind the `/maplemetrics` URL prefix: links keep the prefix and the gateway strips it
+  before the app looks the file up.
+- Static file requests are logged at DEBUG, so the logs show real traffic.
+- New tests collect the files and request them: hashed name, cache headers, gzip, the URL prefix,
+  and a 404 for a missing file.
+
 ### Operations
 - New `/status/` page (English and French) and `/status.json` endpoint. They check the database and
   cache, how many indicators are up to date, when data was last loaded (a stopped daily refresh

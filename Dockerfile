@@ -16,9 +16,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     DJANGO_SETTINGS_MODULE=config.settings.prod
 RUN useradd --create-home --uid 1000 app
 WORKDIR /app
+RUN mkdir staticfiles && chown app:app staticfiles
 COPY --from=builder /opt/venv /opt/venv
 COPY --chown=app:app . .
 USER app
+# Collect the admin's static files into the image. The key is a throwaway value that only lets
+# the production settings load; it is not stored in the image's environment.
+RUN DJANGO_SECRET_KEY=build-time-only python manage.py collectstatic --noinput
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health/').status == 200 else 1)"

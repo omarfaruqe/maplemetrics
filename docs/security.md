@@ -15,6 +15,7 @@ place and what is not.
 | Other headers | `nosniff`, `same-origin` referrer policy, `X-Frame-Options: DENY`, cross-origin opener policy | same file |
 | Escaping | Charts are built as SVG text and marked safe, so every piece of text in them is escaped first | `apps/*/charts.py` |
 | Read-only API | Only GET, no authentication to bypass, rate limited | `apps/api/` |
+| Static files | Served by WhiteNoise from files collected at build time, so nothing at request time reads the file system outside that folder | `config/settings/`, `Dockerfile` |
 | Container | Runs as a non-root user; the base compose file publishes the app on `127.0.0.1` only | `Dockerfile`, `docker-compose.yml` |
 | Secrets | Read from the environment; production refuses to start with the development key; `.env` is not in git | `config/settings/` |
 
