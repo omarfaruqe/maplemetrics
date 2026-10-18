@@ -29,6 +29,9 @@
     .skip:focus { top: 8px; }
     .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
                overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line);
+                   color: var(--muted); font-size: 0.85rem; max-width: 80ch; }
+    .site-footer p { margin: 0 0 8px; }
     .lang { text-align: right; margin: 0 0 8px; }
     .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--muted);
                    text-decoration: underline; cursor: pointer; }
@@ -100,6 +103,7 @@
         </tbody>
       </table>
     </div>
+    {% include "core/_footer.html" %}
   </main>
 </body>
 </html>

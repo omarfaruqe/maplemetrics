@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Data attribution
+- Every page now ends with a footer crediting Statistics Canada (Open Licence, with the required
+  "adapted from" and no-endorsement notices) and the Bank of Canada (source credit, adapted
+  figures, no endorsement), in English and French, with links to each licence in the page language.
+- A test checks all eight page and language combinations for the notices.
+
 ### Accessibility
 - Fixed every issue an axe-core audit found: link and secondary text contrast in light mode, the
   green chart series, charts with no accessible name, and a table area that keyboard users could

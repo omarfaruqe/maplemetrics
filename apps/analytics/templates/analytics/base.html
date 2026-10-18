@@ -82,6 +82,9 @@
     .topnav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 16px;
               font-size: 0.9rem; }
     .topnav a[aria-current="page"] { color: var(--fg); font-weight: 600; text-decoration: none; }
+    .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--grid);
+                   color: var(--muted); font-size: 0.85rem; max-width: 80ch; }
+    .site-footer p { margin: 0 0 8px; }
     .lang { margin-left: auto; }
     .lang button { font: inherit; padding: 0; border: 0; background: none; color: var(--link);
                    text-decoration: underline; cursor: pointer; }
@@ -104,6 +107,7 @@
       </form>
     </nav>
     {% block content %}{% endblock %}
+    {% include "core/_footer.html" %}
   </main>
 </body>
 </html>

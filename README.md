@@ -156,6 +156,10 @@ docs/              Architecture, data dictionary, forecasting methods
 - Bank of Canada [Valet API](https://www.bankofcanada.ca/valet/docs). Check the Bank's terms
   before redistributing its data.
 
+Every page of the site carries the credit and licence notices these terms ask for, in English and
+French (a test fails if a page loses them). Statistics Canada data is shown as adapted, since the
+site derives real rates and forecasts from it. Bank of Canada logos and wordmarks are not used.
+
 MapleMetrics is not affiliated with or endorsed by either organisation.
 
 ## Licence

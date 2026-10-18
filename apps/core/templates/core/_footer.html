@@ -1,0 +1,21 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}{% url 'core:freshness' as freshness_url %}
+<footer class="site-footer">
+  <h2 class="sr-only">{% trans "Data sources and licences" %}</h2>
+  <p>
+    {% if LANGUAGE_CODE|slice:":2" == "fr" %}
+      {% blocktrans with url="https://www.statcan.gc.ca/fr/avis/licence-ouverte" %}Adapted from Statistics Canada, tables 14-10-0287, 20-10-0056 and 18-10-0004, under the <a href="{{ url }}">Statistics Canada Open Licence</a>. This does not constitute an endorsement by Statistics Canada of this product.{% endblocktrans %}
+    {% else %}
+      {% blocktrans with url="https://www.statcan.gc.ca/en/reference/licence" %}Adapted from Statistics Canada, tables 14-10-0287, 20-10-0056 and 18-10-0004, under the <a href="{{ url }}">Statistics Canada Open Licence</a>. This does not constitute an endorsement by Statistics Canada of this product.{% endblocktrans %}
+    {% endif %}
+  </p>
+  <p>
+    {% if LANGUAGE_CODE|slice:":2" == "fr" %}
+      {% blocktrans with url="https://www.banqueducanada.ca/conditions-utilisation-avis/" %}Source: Bank of Canada, Valet API, used under the Bank's <a href="{{ url }}">terms of use</a>. Figures are adapted here (for example real rates and forecasts). The Bank of Canada does not endorse this product.{% endblocktrans %}
+    {% else %}
+      {% blocktrans with url="https://www.bankofcanada.ca/terms/" %}Source: Bank of Canada, Valet API, used under the Bank's <a href="{{ url }}">terms of use</a>. Figures are adapted here (for example real rates and forecasts). The Bank of Canada does not endorse this product.{% endblocktrans %}
+    {% endif %}
+  </p>
+  <p>
+    {% blocktrans with url=freshness_url %}Reference dates for each series are on the <a href="{{ url }}">data freshness</a> page. Forecasts are statistical projections, not advice.{% endblocktrans %}
+  </p>
+</footer>

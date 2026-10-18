@@ -324,3 +324,15 @@ msgstr "Dernière valeur observée : %(actual)s%(unit)s en %(month)s. Prévision
 
 msgid "%(title)s, data table"
 msgstr "%(title)s, tableau de données"
+
+msgid "Data sources and licences"
+msgstr "Sources de données et licences"
+
+msgid "Adapted from Statistics Canada, tables 14-10-0287, 20-10-0056 and 18-10-0004, under the <a href=\"%(url)s\">Statistics Canada Open Licence</a>. This does not constitute an endorsement by Statistics Canada of this product."
+msgstr "Adapté de Statistique Canada, tableaux 14-10-0287, 20-10-0056 et 18-10-0004, en vertu de la <a href=\"%(url)s\">Licence du gouvernement ouvert de Statistique Canada</a>. Cela ne constitue pas une approbation de ce produit par Statistique Canada."
+
+msgid "Source: Bank of Canada, Valet API, used under the Bank's <a href=\"%(url)s\">terms of use</a>. Figures are adapted here (for example real rates and forecasts). The Bank of Canada does not endorse this product."
+msgstr "Source : Banque du Canada, API Valet, utilisée selon les <a href=\"%(url)s\">conditions d'utilisation</a> de la Banque. Les chiffres sont adaptés ici (par exemple les taux réels et les prévisions). La Banque du Canada n'approuve pas ce produit."
+
+msgid "Reference dates for each series are on the <a href=\"%(url)s\">data freshness</a> page. Forecasts are statistical projections, not advice."
+msgstr "Les dates de référence de chaque série figurent sur la page <a href=\"%(url)s\">Fraîcheur des données</a>. Les prévisions sont des projections statistiques, et non des conseils."
