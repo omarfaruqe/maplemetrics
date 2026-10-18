@@ -6,4 +6,4 @@ ruff>=0.6
 pre-commit>=3.8
 requests>=2.32
 bandit>=1.8
-pip-audit>=2.7
+pip-audit>=2.10.1
