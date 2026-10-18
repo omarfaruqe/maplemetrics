@@ -417,3 +417,12 @@ msgstr "Version %(version)s. Vérifié le %(when)s."
 
 msgid "Working, with something to look at"
 msgstr "Fonctionne, avec un point à examiner"
+
+msgid "How to read this"
+msgstr "Comment lire ces données"
+
+msgid "How to read this forecast"
+msgstr "Comment lire cette prévision"
+
+msgid "On this page"
+msgstr "Sur cette page"

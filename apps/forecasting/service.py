@@ -21,6 +21,9 @@ class ForecastError(ValueError):
     """A series cannot be forecast (no data, too short, or the method failed)."""
 
 
+DEFAULT_LEVEL = 0.8
+
+
 @dataclass(frozen=True)
 class ForecastResult:
     code: str
@@ -56,7 +59,7 @@ def build_forecast(
     step: int = 2,
     min_train: int = 60,
     max_train: int = 240,
-    level: float = 0.8,
+    level: float = DEFAULT_LEVEL,
 ) -> ForecastResult:
     """Backtest the chosen method, then forecast ``horizon`` months past the latest data."""
     target = TARGETS[code]

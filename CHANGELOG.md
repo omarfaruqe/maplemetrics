@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Reading guide
+- New "How to read this" page at `/guide/`, in English and French: the real policy rate, unemployment
+  and percentage points, real retail growth, how to read a forecast chart, what the 80% range is
+  (and is not), what "compared with assuming no change" means, the limits of forecasts, a glossary
+  and the data sources. The 80% and 10% figures come from the code, so text and behaviour cannot drift.
+- Linked from the navigation and from the Forecasts page. Covered by the accessibility, axe,
+  CSP and attribution tests like every other page.
+
 ### Project management
 - Added `docs/project/`: charter, roadmap and prioritised backlog, sprint reviews with lessons
   learned, a risk register, a decision log (11 decisions) and a one-page case study. All are

@@ -1,0 +1,98 @@
+{% extends "analytics/base.html" %}{% load i18n %}
+{% block title %}{% trans "How to read this" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "How to read this" %}</h1>
+    <p class="lead">A plain-language guide to the numbers and charts on MapleMetrics, and to what the forecasts can and cannot tell you.</p>
+
+    <nav class="toc" aria-label="{% trans 'On this page' %}">
+      <ol>
+        <li><a href="#what-is-this">What this site shows</a></li>
+        <li><a href="#real-rate">The real policy rate</a></li>
+        <li><a href="#unemployment">Unemployment and percentage points</a></li>
+        <li><a href="#real-retail">Real retail growth</a></li>
+        <li><a href="#forecasts">Reading a forecast chart</a></li>
+        <li><a href="#range">The {{ level }}% range</a></li>
+        <li><a href="#vs-naive">“Compared with assuming no change”</a></li>
+        <li><a href="#limits">What forecasts cannot do</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#sources">Where the data comes from</a></li>
+      </ol>
+    </nav>
+
+    <div class="prose">
+    <section aria-labelledby="what-is-this">
+      <h2 id="what-is-this">What this site shows</h2>
+      <p>MapleMetrics collects public Canadian economic data, mainly from Statistics Canada and the Bank of Canada. It shows where the economy stands now and gives a twelve-month forecast for each indicator, with an honest measure of how far off past forecasts were.</p>
+      <p>Nothing here is advice. It is a way to look at official figures more easily.</p>
+    </section>
+
+    <section aria-labelledby="real-rate">
+      <h2 id="real-rate">The real policy rate</h2>
+      <p>The policy rate is the interest rate the Bank of Canada sets. By itself it can be misleading, because what matters for borrowers and savers is the rate after prices rise.</p>
+      <p>The <strong>real policy rate</strong> is the policy rate at the end of the month minus core inflation (the Bank’s CPI-trim measure, which leaves out the most volatile price changes). If the policy rate is 2.25% and core inflation is 2.4%, the real rate is −0.15 points: money is slightly cheaper than prices are rising.</p>
+      <p>A positive real rate means policy is holding the economy back; a negative one means it is helping it along. This is a simple measure and not the only one economists use.</p>
+    </section>
+
+    <section aria-labelledby="unemployment">
+      <h2 id="unemployment">Unemployment and percentage points</h2>
+      <p>The unemployment rate is the share of people in the labour force who are looking for work and do not have it. The figures here are <strong>seasonally adjusted</strong>, which removes regular yearly patterns such as summer jobs, and cover people aged 15 and over.</p>
+      <p>Changes in a rate are shown in <strong>percentage points</strong> (pts), not percent. If unemployment goes from 6.0% to 6.5%, it rose by 0.5 points. Saying it rose 0.5% would be wrong, and saying 8% would describe a different thing, the relative change.</p>
+    </section>
+
+    <section aria-labelledby="real-retail">
+      <h2 id="real-retail">Real retail growth</h2>
+      <p>Retail sales in dollars can rise just because prices rise. <strong>Real</strong> retail growth removes that. It compares sales with the same month a year earlier, and then takes out inflation over the same twelve months.</p>
+      <p>For example, if sales are 4% higher than a year ago and prices are 3% higher, real growth is about 1%: people bought a little more, not just paid more. The calculation is (1 + sales growth) ÷ (1 + inflation) − 1, using year-over-year changes in each province’s own prices.</p>
+    </section>
+
+    <section aria-labelledby="forecasts">
+      <h2 id="forecasts">Reading a forecast chart</h2>
+      <p>On the Forecasts page, the <strong>solid line</strong> is what actually happened. The <strong>dashed line</strong> is the forecast for the next twelve months. The <strong>shaded band</strong> around it is the range described below.</p>
+      <p>Six simple methods are tried for every indicator: no change, repeat last year’s pattern, continue the recent trend, two smoothing methods and a statistical time-series model (ARIMA). The site uses whichever did best when tested on the past, and says which one it chose.</p>
+    </section>
+
+    <section aria-labelledby="range">
+      <h2 id="range">The {{ level }}% range</h2>
+      <p>The band is <strong>not</strong> a guess about the future. It comes from the past: the forecasting method is run again and again on earlier data, and its misses are measured at each distance ahead (one month, two months, and so on up to twelve). This is called a backtest.</p>
+      <p>The band’s width at each horizon is the size of miss that {{ level }}% of past forecasts stayed within. So, roughly, four times out of five a past forecast landed inside a band like this one. The band never gets narrower further ahead, it is the same size above and below, and it is not allowed to go below zero.</p>
+      <p>This means the range can be wrong when the economy behaves in a way it has not before.</p>
+    </section>
+
+    <section aria-labelledby="vs-naive">
+      <h2 id="vs-naive">“Compared with assuming no change”</h2>
+      <p>The simplest forecast is to assume nothing changes: next year will look like today. A forecasting method is only worth using if it beats that.</p>
+      <p>The site compares the chosen method’s past errors with the errors of “no change” on the same dates. A ratio of 0.8 means the method’s errors were 20% smaller. If the method is within {{ edge }}% of “no change”, the site says it is <strong>not meaningfully better</strong>, and you should treat the forecast as little more than the latest value.</p>
+      <p>Many economic series are genuinely hard to forecast, so seeing “no better than no change” is common and honest.</p>
+    </section>
+
+    <section aria-labelledby="limits">
+      <h2 id="limits">What forecasts cannot do</h2>
+      <ul>
+        <li>They cannot anticipate shocks such as a pandemic, a trade dispute or a sudden policy change.</li>
+        <li>They use only the indicator’s own history, with no information about the news, the weather or politics.</li>
+        <li>Official figures are revised, and later numbers can differ from the first release.</li>
+        <li>Small provinces have noisier data, so their forecasts and ranges are less reliable.</li>
+      </ul>
+      <p>Use the forecasts to see what continuing the past would look like, not as a prediction of what will happen.</p>
+    </section>
+
+    <section aria-labelledby="glossary">
+      <h2 id="glossary">Glossary</h2>
+      <dl>
+        <dt>Policy rate</dt><dd>The Bank of Canada’s target for the overnight interest rate.</dd>
+        <dt>Core inflation (CPI-trim)</dt><dd>Inflation with the most extreme price changes removed, so it shows the underlying trend.</dd>
+        <dt>Real rate</dt><dd>An interest rate minus inflation.</dd>
+        <dt>Seasonally adjusted</dt><dd>Data with regular yearly patterns removed.</dd>
+        <dt>Percentage point (pt)</dt><dd>The difference between two percentages.</dd>
+        <dt>Year over year</dt><dd>A comparison with the same month one year earlier.</dd>
+        <dt>Backtest</dt><dd>Running a forecasting method on past data to see how wrong it would have been.</dd>
+        <dt>Horizon</dt><dd>How far ahead a forecast looks, in months.</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="sources">
+      <h2 id="sources">Where the data comes from</h2>
+      <p>Unemployment, consumer prices and retail sales come from Statistics Canada. The policy rate comes from the Bank of Canada. Both are published under open government licences; the footer of every page links to the terms. The <a href="{% url 'core:freshness' %}">data freshness</a> page shows when each series was last updated, and the <a href="{% url 'core:status' %}">status</a> page shows whether the system is working.</p>
+    </section>
+    </div>
+{% endblock %}

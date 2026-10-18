@@ -88,6 +88,15 @@
     .site-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--grid);
                    color: var(--muted); font-size: 0.85rem; max-width: 80ch; }
     .site-footer p { margin: 0 0 8px; }
+    .toc { max-width: 70ch; margin: 0 0 24px; }
+    .toc ol { margin: 8px 0 0; padding-left: 1.4em; }
+    .toc li { padding: 4px 0; }
+    .toc a { display: inline-block; min-height: 24px; }
+    .prose { max-width: 70ch; line-height: 1.6; }
+    .prose h2 { margin: 28px 0 8px; font-size: 1.2rem; }
+    .prose p, .prose ul, .prose dl { margin: 0 0 12px; }
+    .prose dt { font-weight: 600; margin-top: 10px; }
+    .prose dd { margin: 2px 0 0 0; color: var(--muted); }
     .badge { font-weight: 600; }
     .badge.ok { color: var(--ok); }
     .badge.warn { color: var(--warn); }
@@ -110,6 +119,7 @@
       <a href="{% url 'analytics:dashboard' %}"{% if active == 'dashboard' %} aria-current="page"{% endif %}>{% trans "Dashboard" %}</a>
       <a href="{% url 'analytics:provinces' %}"{% if active == 'provinces' %} aria-current="page"{% endif %}>{% trans "Provinces" %}</a>
       <a href="{% url 'forecasting:forecasts' %}"{% if active == 'forecasts' %} aria-current="page"{% endif %}>{% trans "Forecasts" %}</a>
+      <a href="{% url 'core:guide' %}"{% if active == 'guide' %} aria-current="page"{% endif %}>{% trans "How to read this" %}</a>
       <a href="{% url 'core:freshness' %}">{% trans "Data freshness" %}</a>
       <a href="{% url 'core:status' %}"{% if active == 'status' %} aria-current="page"{% endif %}>{% trans "Status" %}</a>
       <form class="lang" action="{% url 'set_language' %}" method="post">{% csrf_token %}

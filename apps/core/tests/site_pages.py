@@ -62,6 +62,7 @@ def page_urls() -> dict[str, str]:
         + "?indicator=LFS_UNEMPLOYMENT_RATE&geo=Canada",
         "freshness": reverse("core:freshness"),
         "status": reverse("core:status"),
+        "guide": reverse("core:guide"),
     }
 
 

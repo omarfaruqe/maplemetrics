@@ -63,7 +63,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Open |
 | B-08 | Query-count and response-time tests for the main pages | Should | M | Catches slow pages before users do | Open |
 | B-09 | CSV download for any chart or table | Should | S | Most requested feature for an open-data tool | Open |
-| B-10 | "How to read this" page: real rate, MASE, empirical ranges in plain language, in both languages | Should | M | The forecasting honesty is the project's differentiator; it should be explained | Open |
+| B-10 | "How to read this" page: real rate, MASE, empirical ranges in plain language, in both languages | Should | M | The forecasting honesty is the project's differentiator; it should be explained | Done |
 | B-11 | Forecast accuracy over time (compare past forecasts with what happened) | Could | L | Turns backtests into a live track record | Open |
 | B-12 | Additional indicators (for example GDP, wages, housing) | Could | L | Broader value; each needs a catalog entry, tests and French names | Open |
 | B-13 | Side-by-side comparison of two provinces | Could | M | Natural extension of the province page | Open |

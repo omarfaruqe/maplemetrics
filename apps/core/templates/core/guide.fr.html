@@ -1,0 +1,98 @@
+{% extends "analytics/base.html" %}{% load i18n %}
+{% block title %}{% trans "How to read this" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "How to read this" %}</h1>
+    <p class="lead">Un guide en langage simple pour comprendre les chiffres et les graphiques de MapleMetrics, et ce que les prévisions peuvent ou non vous dire.</p>
+
+    <nav class="toc" aria-label="{% trans 'On this page' %}">
+      <ol>
+        <li><a href="#what-is-this">Ce que montre ce site</a></li>
+        <li><a href="#real-rate">Le taux directeur réel</a></li>
+        <li><a href="#unemployment">Chômage et points de pourcentage</a></li>
+        <li><a href="#real-retail">Croissance réelle du commerce de détail</a></li>
+        <li><a href="#forecasts">Lire un graphique de prévision</a></li>
+        <li><a href="#range">La fourchette à {{ level }}&nbsp;%</a></li>
+        <li><a href="#vs-naive">« Par rapport à l’hypothèse d’une absence de changement »</a></li>
+        <li><a href="#limits">Ce que les prévisions ne peuvent pas faire</a></li>
+        <li><a href="#glossary">Glossaire</a></li>
+        <li><a href="#sources">D’où viennent les données</a></li>
+      </ol>
+    </nav>
+
+    <div class="prose">
+    <section aria-labelledby="what-is-this">
+      <h2 id="what-is-this">Ce que montre ce site</h2>
+      <p>MapleMetrics rassemble des données économiques canadiennes publiques, principalement de Statistique Canada et de la Banque du Canada. Le site montre où en est l’économie et donne, pour chaque indicateur, une prévision à douze mois accompagnée d’une mesure honnête de l’écart des prévisions passées.</p>
+      <p>Rien ici n’est un conseil. C’est une façon de consulter plus facilement des chiffres officiels.</p>
+    </section>
+
+    <section aria-labelledby="real-rate">
+      <h2 id="real-rate">Le taux directeur réel</h2>
+      <p>Le taux directeur est le taux d’intérêt fixé par la Banque du Canada. Pris seul, il peut induire en erreur, car ce qui compte pour les emprunteurs et les épargnants, c’est le taux une fois la hausse des prix déduite.</p>
+      <p>Le <strong>taux directeur réel</strong> est le taux directeur de fin de mois moins l’inflation de base (la mesure IPC-tronq de la Banque, qui écarte les variations de prix les plus volatiles). Si le taux directeur est de 2,25&nbsp;% et l’inflation de base de 2,4&nbsp;%, le taux réel est de −0,15 point : l’argent coûte un peu moins cher que la hausse des prix.</p>
+      <p>Un taux réel positif signifie que la politique freine l’économie; un taux négatif, qu’elle la soutient. C’est une mesure simple, parmi d’autres utilisées par les économistes.</p>
+    </section>
+
+    <section aria-labelledby="unemployment">
+      <h2 id="unemployment">Chômage et points de pourcentage</h2>
+      <p>Le taux de chômage est la part des personnes de la population active qui cherchent un emploi sans en avoir. Les chiffres présentés sont <strong>désaisonnalisés</strong>, ce qui retire les cycles annuels réguliers comme les emplois d’été, et portent sur les personnes de 15 ans et plus.</p>
+      <p>Les variations d’un taux sont exprimées en <strong>points de pourcentage</strong> (pts), et non en pourcentage. Si le chômage passe de 6,0&nbsp;% à 6,5&nbsp;%, il a augmenté de 0,5 point. Dire qu’il a augmenté de 0,5&nbsp;% serait faux, et parler de 8&nbsp;% décrirait autre chose, la variation relative.</p>
+    </section>
+
+    <section aria-labelledby="real-retail">
+      <h2 id="real-retail">Croissance réelle du commerce de détail</h2>
+      <p>Les ventes au détail en dollars peuvent augmenter simplement parce que les prix montent. La croissance <strong>réelle</strong> retire cet effet. Elle compare les ventes au même mois un an plus tôt, puis déduit l’inflation des douze mêmes mois.</p>
+      <p>Par exemple, si les ventes sont supérieures de 4&nbsp;% à celles d’il y a un an et les prix de 3&nbsp;%, la croissance réelle est d’environ 1&nbsp;% : les gens ont acheté un peu plus, et pas seulement payé plus. Le calcul est (1 + croissance des ventes) ÷ (1 + inflation) − 1, à partir des variations sur douze mois et des prix propres à chaque province.</p>
+    </section>
+
+    <section aria-labelledby="forecasts">
+      <h2 id="forecasts">Lire un graphique de prévision</h2>
+      <p>Sur la page des prévisions, la <strong>ligne pleine</strong> montre ce qui s’est réellement passé. La <strong>ligne pointillée</strong> est la prévision pour les douze prochains mois. La <strong>bande ombrée</strong> qui l’entoure est la fourchette décrite ci-dessous.</p>
+      <p>Six méthodes simples sont essayées pour chaque indicateur : aucun changement, répétition du schéma de l’an dernier, prolongation de la tendance récente, deux méthodes de lissage et un modèle statistique de séries chronologiques (ARIMA). Le site retient celle qui a le mieux fait lors des essais sur le passé, et indique laquelle.</p>
+    </section>
+
+    <section aria-labelledby="range">
+      <h2 id="range">La fourchette à {{ level }}&nbsp;%</h2>
+      <p>La bande n’est <strong>pas</strong> une supposition sur l’avenir. Elle vient du passé : la méthode est appliquée à répétition à des données antérieures, et ses écarts sont mesurés pour chaque distance (un mois, deux mois, jusqu’à douze). C’est ce qu’on appelle un rétrotest.</p>
+      <p>La largeur de la bande à chaque horizon correspond à l’écart que {{ level }}&nbsp;% des prévisions passées n’ont pas dépassé. Autrement dit, environ quatre fois sur cinq, une prévision passée est restée dans une bande comme celle-ci. La bande ne se resserre jamais avec l’éloignement, elle est identique au-dessus et en dessous, et elle ne descend pas sous zéro.</p>
+      <p>La fourchette peut donc se tromper si l’économie se comporte d’une manière encore jamais vue.</p>
+    </section>
+
+    <section aria-labelledby="vs-naive">
+      <h2 id="vs-naive">« Par rapport à l’hypothèse d’une absence de changement »</h2>
+      <p>La prévision la plus simple consiste à supposer que rien ne change : l’an prochain ressemblera à aujourd’hui. Une méthode de prévision ne vaut la peine que si elle fait mieux.</p>
+      <p>Le site compare les erreurs passées de la méthode retenue à celles de l’« absence de changement » aux mêmes dates. Un ratio de 0,8 signifie que les erreurs de la méthode étaient inférieures de 20&nbsp;%. Si la méthode se situe à moins de {{ edge }}&nbsp;% de l’« absence de changement », le site indique qu’elle n’est <strong>pas nettement meilleure</strong>, et il faut alors voir la prévision comme à peine plus que la dernière valeur.</p>
+      <p>Beaucoup de séries économiques sont réellement difficiles à prévoir : voir « pas mieux que l’absence de changement » est courant, et honnête.</p>
+    </section>
+
+    <section aria-labelledby="limits">
+      <h2 id="limits">Ce que les prévisions ne peuvent pas faire</h2>
+      <ul>
+        <li>Elles ne peuvent pas anticiper les chocs, comme une pandémie, un différend commercial ou un changement soudain de politique.</li>
+        <li>Elles n’utilisent que l’historique de l’indicateur, sans information sur l’actualité, la météo ou la politique.</li>
+        <li>Les chiffres officiels sont révisés, et les valeurs ultérieures peuvent différer de la première publication.</li>
+        <li>Les données des petites provinces sont plus bruitées; leurs prévisions et leurs fourchettes sont moins fiables.</li>
+      </ul>
+      <p>Servez-vous des prévisions pour voir ce que donnerait la poursuite du passé, et non comme une prédiction de ce qui arrivera.</p>
+    </section>
+
+    <section aria-labelledby="glossary">
+      <h2 id="glossary">Glossaire</h2>
+      <dl>
+        <dt>Taux directeur</dt><dd>La cible de la Banque du Canada pour le taux du financement à un jour.</dd>
+        <dt>Inflation de base (IPC-tronq)</dt><dd>L’inflation sans les variations de prix les plus extrêmes, qui montre la tendance sous-jacente.</dd>
+        <dt>Taux réel</dt><dd>Un taux d’intérêt moins l’inflation.</dd>
+        <dt>Désaisonnalisé</dt><dd>Se dit de données dont les cycles annuels réguliers ont été retirés.</dd>
+        <dt>Point de pourcentage (pt)</dt><dd>L’écart entre deux pourcentages.</dd>
+        <dt>Sur douze mois</dt><dd>Une comparaison avec le même mois un an plus tôt.</dd>
+        <dt>Rétrotest</dt><dd>Application d’une méthode de prévision à des données passées pour voir à quel point elle aurait été dans l’erreur.</dd>
+        <dt>Horizon</dt><dd>La distance à laquelle porte une prévision, en mois.</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="sources">
+      <h2 id="sources">D’où viennent les données</h2>
+      <p>Le chômage, les prix à la consommation et les ventes au détail proviennent de Statistique Canada. Le taux directeur provient de la Banque du Canada. Les deux sont publiés sous des licences ouvertes du gouvernement; le pied de page de chaque page renvoie aux conditions. La page <a href="{% url 'core:freshness' %}">Fraîcheur des données</a> indique la dernière mise à jour de chaque série, et la page <a href="{% url 'core:status' %}">État du système</a> si le système fonctionne.</p>
+    </section>
+    </div>
+{% endblock %}

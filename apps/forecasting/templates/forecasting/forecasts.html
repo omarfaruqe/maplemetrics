@@ -2,7 +2,7 @@
 {% block title %}{% trans "Forecasts" %}{% endblock %}
 {% block content %}
     <h1>{% trans "Forecasts" %}</h1>
-    <p class="lead">{% trans "Twelve-month forecasts with the range that past forecasts of the same method stayed within." %}</p>
+    <p class="lead">{% trans "Twelve-month forecasts with the range that past forecasts of the same method stayed within." %} <a href="{% url 'core:guide' %}">{% trans "How to read this forecast" %}</a>.</p>
 
     {% if not has_data %}
       <p class="card">{% trans "No forecasts yet. Run the forecast command first." %}</p>

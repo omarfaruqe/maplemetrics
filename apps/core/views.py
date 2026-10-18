@@ -2,9 +2,11 @@ from django.db import connection
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.views.decorators.cache import never_cache
 
+from apps.forecasting.service import DEFAULT_LEVEL
+from apps.forecasting.views import NO_EDGE
 from apps.warehouse.freshness import freshness_report
 
 from .status import snapshot
@@ -57,3 +59,14 @@ def status_json(request: HttpRequest) -> JsonResponse:
         "checks": {check.key: {"status": check.status, **check.data} for check in state["checks"]},
     }
     return JsonResponse(body, status=503 if state["overall"] == "down" else 200)
+
+
+def guide(request: HttpRequest) -> HttpResponse:
+    """A plain-language reading guide, written separately in each language."""
+    language = "fr" if translation.get_language().startswith("fr") else "en"
+    context = {
+        "active": "guide",
+        "level": round(DEFAULT_LEVEL * 100),
+        "edge": round((1 - NO_EDGE) * 100),
+    }
+    return render(request, f"core/guide.{language}.html", context)

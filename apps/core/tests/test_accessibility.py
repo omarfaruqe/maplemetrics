@@ -143,7 +143,8 @@ def test_every_chart_is_named_and_described(audits):
 
 def test_scrollable_areas_are_keyboard_reachable_and_named(audits):
     for name, page in audits.items():
-        assert page.regions, name
+        if page.svgs or page.tables:
+            assert page.regions, name
         for region in page.regions:
             assert region.get("tabindex") == "0", name
             assert region.get("role") == "region", name
