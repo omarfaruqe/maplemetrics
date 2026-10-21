@@ -23,7 +23,8 @@ log() { echo "$(date '+%Y-%m-%dT%H:%M:%S%z') $*"; }
 mkdir -p "$local_dir"
 
 # BatchMode makes a missing key fail at once instead of waiting for a password nobody can type.
-if ! rsync -t --partial \
+# -r is needed to look inside the server's folder; --exclude='*' keeps it from going deeper.
+if ! rsync -rt --partial \
   -e "ssh -o BatchMode=yes -o ConnectTimeout=20" \
   --include='maplemetrics-*.sql.gz' --exclude='*' \
   "$remote:$remote_dir/" "$local_dir/"; then

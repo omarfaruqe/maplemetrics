@@ -144,6 +144,11 @@ def test_scratch_database_is_removed_even_when_the_restore_fails(env):
 # A pretend rsync: copies matching files from a local folder standing in for the server.
 FAKE_RSYNC = """#!/bin/bash
 [ -n "${MOCK_RSYNC_FAIL:-}" ] && exit 23
+# Like the real tool: a folder is skipped unless recursion is asked for.
+case " $* " in
+  *" -r"*) ;;
+  *) echo "skipping directory ." >&2; exit 0 ;;
+esac
 src="${@: -2:1}"
 dst="${@: -1:1}"
 src="${src#*:}"
