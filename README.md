@@ -67,6 +67,7 @@ tables and backtests about 33 series, so expect several minutes. Then open:
 | API documentation | http://localhost:8000/api/v1/docs/ |
 | System status | http://localhost:8000/status/ |
 | Reading guide | http://localhost:8000/guide/ |
+| Forecast data (CSV) | http://localhost:8000/downloads/forecast.csv?indicator=LFS_UNEMPLOYMENT_RATE&geo=Canada |
 | Health check | http://localhost:8000/health/ |
 
 `make up`, `make test`, `make lint`, `make fmt` and `make refresh` wrap the common commands.

@@ -48,6 +48,7 @@
           <tbody>{% for day, value, low, high in rows %}<tr><th scope="row">{{ day|date:"Y-m" }}</th><td class="num">{{ value|floatformat:dp }}{{ unit }}</td><td class="num">{{ low|floatformat:dp }}{{ unit }}</td><td class="num">{{ high|floatformat:dp }}{{ unit }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
+      <p class="download"><a href="{% url 'forecasting:forecast_csv' %}?indicator={{ code|urlencode }}&amp;geo={{ geo|urlencode }}">{% trans "Download data (CSV)" %}<span class="sr-only">: {{ title }}, {{ geo|geography }}</span></a></p>
     </section>
     {% endif %}
 {% endblock %}

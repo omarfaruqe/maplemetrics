@@ -32,6 +32,7 @@
           <tbody>{% for p in rates %}<tr><th scope="row">{{ p.date|date:"Y-m" }}</th><td class="num">{{ p.policy|floatformat:2 }}</td><td class="num">{{ p.core|floatformat:2 }}</td><td class="num">{{ p.real|floatformat:2 }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
+      <p class="download"><a href="{% url 'analytics:rates_csv' %}">{% trans "Download data (CSV)" %}<span class="sr-only">: {{ rates_title }}</span></a></p>
     </section>
     {% endif %}
 
@@ -49,6 +50,7 @@
           <tbody>{% for r in unemployment %}<tr><th scope="row">{{ r.geography|geography }}</th><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.rate|floatformat:1 }}</td><td class="num">{{ r.year_ago|floatformat:1|default:"–" }}</td><td class="num">{{ r.change|floatformat:1|default:"–" }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
+      <p class="download"><a href="{% url 'analytics:unemployment_csv' %}">{% trans "Download data (CSV)" %}<span class="sr-only">: {{ unemployment_title }}</span></a></p>
     </section>
     {% endif %}
 
@@ -66,6 +68,7 @@
           <tbody>{% for r in retail %}<tr><th scope="row">{{ r.geography|geography }}</th><td>{{ r.date|date:"Y-m" }}</td><td class="num">{{ r.nominal|floatformat:1 }}</td><td class="num">{{ r.inflation|floatformat:1 }}</td><td class="num">{{ r.real|floatformat:1 }}</td></tr>{% endfor %}</tbody>
         </table></div>
       </details>
+      <p class="download"><a href="{% url 'analytics:retail_csv' %}">{% trans "Download data (CSV)" %}<span class="sr-only">: {{ retail_title }}</span></a></p>
     </section>
     {% endif %}
     {% endif %}

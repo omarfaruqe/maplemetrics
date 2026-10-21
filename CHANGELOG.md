@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### CSV downloads
+- Every table on the dashboard, the provinces page and the forecasts page now has a "Download data
+  (CSV)" link (in French, "Télécharger les données (CSV)"). Downloads carry the full history, not
+  just the rows shown, and the forecast file holds the history, the twelve forecast months, the
+  range, the method and the unit.
+- Files are the same in both languages: English column names, ISO dates and a dot for decimals.
+  Each row names its source and licence. A byte order mark makes Excel read accents correctly, and
+  text that could run as a spreadsheet formula is quoted. Unknown series, provinces or indicators
+  answer 404.
+
 ### Reading guide
 - New "How to read this" page at `/guide/`, in English and French: the real policy rate, unemployment
   and percentage points, real retail growth, how to read a forecast chart, what the 80% range is

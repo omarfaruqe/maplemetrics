@@ -39,6 +39,7 @@
           <tbody>{% for day, value, canada in panel.rows %}<tr><th scope="row">{{ day|date:"Y-m" }}</th><td class="num">{{ value|floatformat:1 }}</td>{% if panel.compare %}<td class="num">{{ canada|floatformat:1|default:"–" }}</td>{% endif %}</tr>{% endfor %}</tbody>
         </table></div>
       </details>
+      <p class="download"><a href="{% url 'analytics:province_csv' %}?series={{ panel.key }}&amp;geo={{ geo|urlencode }}">{% trans "Download data (CSV)" %}<span class="sr-only">: {{ panel.title }}</span></a></p>
       {% else %}
       <p class="note">{% trans "No data for this province yet." %}</p>
       {% endif %}

@@ -426,3 +426,6 @@ msgstr "Comment lire cette prévision"
 
 msgid "On this page"
 msgstr "Sur cette page"
+
+msgid "Download data (CSV)"
+msgstr "Télécharger les données (CSV)"

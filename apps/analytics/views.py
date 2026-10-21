@@ -135,22 +135,25 @@ def provinces(request: HttpRequest) -> HttpResponse:
     if geo:
         sources = [
             (
+                "unemployment",
                 _("Unemployment rate"),
                 lambda g: kpis.series(kpis.UNEMPLOYMENT, g),
                 _("Seasonally adjusted, 15 years and over."),
             ),
             (
+                "inflation",
                 _("Inflation (CPI, year over year)"),
                 lambda g: kpis.yoy_series(kpis.CPI_INDEX, g),
                 _("Change in the all-items consumer price index over twelve months."),
             ),
             (
+                "real-retail",
                 _("Real retail sales growth (year over year)"),
                 kpis.real_retail_yoy,
                 _("Retail sales growth over twelve months, deflated by CPI."),
             ),
         ]
-        for title, getter, note in sources:
+        for key, title, getter, note in sources:
             geo_points = getter(geo)
             canada_points = getter(kpis.NATIONAL)
             lines = [Line(geography_name(geo), "--series-1", geo_points[-HISTORY_MONTHS:])]
@@ -166,6 +169,7 @@ def provinces(request: HttpRequest) -> HttpResponse:
                 tiles.append(tile)
             panels.append(
                 {
+                    "key": key,
                     "title": title,
                     "note": note,
                     "chart": line_chart(lines, label=f"{title}: {geography_name(geo)}"),
