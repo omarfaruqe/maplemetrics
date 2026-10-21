@@ -60,7 +60,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | **Done 2026-10-18.** `deploy/restore-test.sh` restored a real backup into a scratch database on the server and the counts matched (`PASS`). Procedure in the operations guide |
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |
 | B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Open |
-| B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Open |
+| B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Done for idempotency and revisions (12 tests, 2026-10-21); real recorded samples moved to B-18 |
 | B-08 | Query-count and response-time tests for the main pages | Should | M | Catches slow pages before users do | Open |
 | B-09 | CSV download for any chart or table | Should | S | Most requested feature for an open-data tool | Done |
 | B-10 | "How to read this" page: real rate, MASE, empirical ranges in plain language, in both languages | Should | M | The forecasting honesty is the project's differentiator; it should be explained | Done |
@@ -71,6 +71,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-15 | Usability test with screen-reader users | Could | M | Automated tools find only part of the problems | Open |
 | B-16 | Demo GIF and a short video walkthrough for the README | Could | S | Faster to review than screenshots | Open |
 | B-17 | Copy backups off the server automatically | Should | M | Backups sit on the same disk as the database, so a disk failure would lose both | Open |
+| B-18 | Record real Statistics Canada and Bank of Canada responses as trimmed test fixtures | Could | S | The idempotency tests use files built to the real column layout; real samples would also catch format changes | Open |
 
 ## Prioritisation notes
 

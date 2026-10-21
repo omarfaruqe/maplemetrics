@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Data pipeline
+- 12 new tests run the real ingestion commands and table reader with a Statistics Canada style
+  file and prove that a refresh can be repeated safely: the same release twice changes nothing; a
+  revised value replaces the old one without a duplicate; new months are added; months missing from
+  a later file and suppressed values never erase stored data; and a failure while loading leaves
+  none of that measure's rows behind. A full refresh run twice leaves identical data.
+- A source that repeats a date in one batch is now stored once, with the last value. PostgreSQL
+  refuses an upsert that names the same row twice, and the SQLite test database does not, so this
+  is guarded in the loader rather than left to the database.
+
 ### CSV downloads
 - Every table on the dashboard, the provinces page and the forecasts page now has a "Download data
   (CSV)" link (in French, "Télécharger les données (CSV)"). Downloads carry the full history, not

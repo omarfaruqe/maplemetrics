@@ -42,6 +42,9 @@ def latest_date(indicator: Indicator, geography: str = "Canada") -> date | None:
 def load_points(indicator: Indicator, points: Iterable[Point], geography: str = "Canada") -> int:
     """Upsert points for one indicator. Re-running never creates duplicates."""
     now = timezone.now()
+    # One row per date, the last value winning. PostgreSQL refuses an upsert that names the same
+    # row twice, so a source repeating a date must not reach the database as two rows.
+    latest_by_date = {point.date: point for point in points}
     rows = [
         Observation(
             indicator=indicator,
@@ -50,7 +53,7 @@ def load_points(indicator: Indicator, points: Iterable[Point], geography: str = 
             value=point.value,
             ingested_at=now,
         )
-        for point in points
+        for point in latest_by_date.values()
     ]
     if not rows:
         return 0
