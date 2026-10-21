@@ -56,7 +56,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 |---|---|---|---|---|---|
 | B-01 | Make the server reachable from the internet on port 80 and confirm the demo URL loads | Must | S | The charter's last success criterion; a live demo is the best proof of the project | **Done 2026-10-18.** Verified from outside with `curl` (redirect to the dashboard, through the gateway) and `/status.json` |
 | B-02 | Confirm the first full data refresh loaded and the status page reads "ok" | Must | S | Proves the pipeline works in production | **Done 2026-10-18.** Status `ok`: 8 of 8 indicators fresh, 33 forecasts, last load minutes old |
-| B-03 | Set up and verify the daily cron refresh and backup job on the server | Must | S | Without it the data goes stale and the status page warns | Open |
+| B-03 | Set up and verify the daily cron refresh and backup job on the server | Must | S | Without it the data goes stale and the status page warns | Done (verified 2026-10-20: backups written on three consecutive mornings, refresh finished in 186 s, status `ok`) |
 | B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | **Done 2026-10-18.** `deploy/restore-test.sh` restored a real backup into a scratch database on the server and the counts matched (`PASS`). Procedure in the operations guide |
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |
 | B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Open |

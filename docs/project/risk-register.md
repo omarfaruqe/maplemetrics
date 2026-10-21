@@ -14,7 +14,7 @@ Last review: 2026-10-18.
 | R-05 | A dependency has a known vulnerability | 3 | 4 | 12 | `pip-audit` on every push and weekly; Dependabot pull requests; bounded version ranges | Low | Mitigated |
 | R-06 | Insecure code or missing hardening reaches production | 2 | 5 | 10 | `bandit` in CI; Content-Security-Policy; `check --deploy` test; production refuses the development secret key; port bound to localhost by default | Low | Mitigated |
 | R-07 | Traffic to the demo is unencrypted because the server is reached by IP address over HTTP | 5 | 2 | 10 | Only public data is served and there are no accounts; documented in the security notes; HTTPS settings are ready (B-05) | Medium | Accepted until a domain exists |
-| R-08 | Data goes stale unnoticed (cron stops, server restarts, source outage) | 3 | 3 | 9 | Status page warns after three days without a load; `/status.json` for an external monitor; refresh logs each step | Medium | Partly mitigated. A first manual refresh worked and the status page read `ok` on 2026-10-18. The daily cron and an external monitor are not yet verified (B-03) |
+| R-08 | Data goes stale unnoticed (cron stops, server restarts, source outage) | 3 | 3 | 9 | Status page warns after three days without a load; `/status.json` for an external monitor; refresh logs each step | Medium | Mostly mitigated. The daily cron is verified: backups were written at 06:30 server time on 2026-10-19, 20 and 21, and the 06:00 refresh on 2026-10-21 finished in 186 s, leaving `/status.json` at `ok` with a last refresh 1.9 hours old. Still open: an external monitor that alerts when the status turns bad |
 | R-09 | The database is lost and the backup cannot be restored | 2 | 5 | 10 | `deploy/backup.sh` keeps only readable archives; `deploy/restore-test.sh` proves a restore into a scratch database; data can also be rebuilt from public sources in minutes | Low to medium | Restore **verified 2026-10-18** (B-04). Remaining gap: backups share the server's disk, and the daily schedule is not yet confirmed (B-03, B-17) |
 | R-10 | The demo is not reachable from outside, so the project cannot be shown live | 4 | 3 | 12 | Reachability verified from outside on 2026-10-18; `/status.json` can be watched by an external monitor | Low | **Closed** 2026-10-18 (B-01). Reopens if the server or gateway changes |
 | R-11 | Accessibility regressions as pages change | 3 | 3 | 9 | Contrast and structure tests on every run; axe-core audit in CI in both languages, both themes, desktop and 320 px | Low | Mitigated. Real-user testing (B-15) has not happened |
@@ -28,7 +28,7 @@ Last review: 2026-10-18.
 ## Reading the register
 
 - **High right now:** none. R-10 was closed on 2026-10-18.
-- **Open and not yet proven:** R-08 (the daily schedule on the server) and the off-machine copy
+- **Open and not yet proven:** an external monitor for R-08 and the off-machine copy
   of backups under R-09. These are cheap to close, and they are what turns "designed" into
   "operated".
 - **Accepted on purpose:** R-07 and R-14, with the reason written next to them.
