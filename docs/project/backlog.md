@@ -61,7 +61,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |
 | B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Open |
 | B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Done for idempotency and revisions (12 tests, 2026-10-21); real recorded samples moved to B-18 |
-| B-08 | Query-count and response-time tests for the main pages | Should | M | Catches slow pages before users do | Open |
+| B-08 | Query-count and response-time tests for the main pages | Should | M | Catches slow pages before users do | Done (2026-10-21: query budgets, scale and time limits for 11 pages) |
 | B-09 | CSV download for any chart or table | Should | S | Most requested feature for an open-data tool | Done |
 | B-10 | "How to read this" page: real rate, MASE, empirical ranges in plain language, in both languages | Should | M | The forecasting honesty is the project's differentiator; it should be explained | Done |
 | B-11 | Forecast accuracy over time (compare past forecasts with what happened) | Could | L | Turns backtests into a live track record | Open |

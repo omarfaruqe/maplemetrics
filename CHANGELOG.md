@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Performance tests
+- 33 new tests check eleven pages and downloads against a warehouse of realistic size (eleven
+  geographies, twenty years of monthly data, ten years of daily policy rates, 33 stored forecasts).
+  Each page has a query budget measured today (the busiest, the provinces page, uses 9 queries), a
+  test that the count does not grow when provinces are added, and a generous time limit of 1.5
+  seconds. The slowest page answered in about 70 milliseconds.
+
 ### Data pipeline
 - 12 new tests run the real ingestion commands and table reader with a Statistics Canada style
   file and prove that a refresh can be repeated safely: the same release twice changes nothing; a
