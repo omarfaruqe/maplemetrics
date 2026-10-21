@@ -35,11 +35,13 @@ Run the two scanners locally with `make audit` (after `pip install -r requiremen
 
 ## Choices worth knowing
 
-- **Swagger UI needs a looser policy.** The interactive API documentation loads its code from the
-  jsDelivr CDN and starts itself with an inline script, so `/api/v1/docs/` allows both. It is a
-  documentation page with no sensitive data, and the rest of the site is not affected.
-  Serving Swagger from the project itself (the `drf-spectacular-sidecar` package) would remove the
-  CDN dependency; that is a possible later change.
+- **Swagger UI has its own policy, but no outside dependency.** The interactive API documentation
+  is served from the project's own static files (the `drf-spectacular-sidecar` package), its
+  start-up script is a separate request, and its one inline `<style>` carries the nonce. So
+  `/api/v1/docs/` allows scripts from this site only, with no CDN and no inline script. It still
+  allows inline `style` attributes, which Swagger UI sets on elements as it draws. A browser test
+  loads the page, runs a request through "Try it out", and fails on any policy violation or any
+  request to another host.
 - **Two bandit findings are marked on purpose.** `mark_safe` in the chart code is safe because
   every text value is escaped before it is added, and the tests above check that. The development
   secret-key string is a guard that stops production starting, not a password. Each marker has the

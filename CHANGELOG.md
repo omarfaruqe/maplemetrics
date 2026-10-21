@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### API documentation
+- Swagger UI is now served from the project itself (new dependency `drf-spectacular-sidecar`)
+  instead of the jsDelivr CDN. The docs page no longer needs any outside host, and its Content
+  Security Policy dropped the CDN and inline scripts: scripts load from this site only, and the one
+  inline style uses the per-request nonce. The production static-file build (hashed, compressed)
+  was checked with the new files; they add about 24 MB to the image.
+- A browser test opens the docs page, expands an endpoint, runs it with "Try it out" and fails on
+  any policy violation or any request to another host.
+
 ### Performance tests
 - 33 new tests check eleven pages and downloads against a warehouse of realistic size (eleven
   geographies, twenty years of monthly data, ten years of daily policy rates, 33 stored forecasts).

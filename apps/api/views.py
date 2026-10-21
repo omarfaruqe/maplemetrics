@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import Count, Max, Min
 from django.utils.cache import patch_cache_control, patch_vary_headers
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.views import SpectacularSwaggerSplitView
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
@@ -108,3 +109,9 @@ class ForecastViewSet(PublicReadOnlyViewSet):
         if geography := params.get("geography"):
             queryset = queryset.filter(geography=geography)
         return queryset
+
+
+class DocsView(SpectacularSwaggerSplitView):
+    """Swagger UI whose start-up script is its own request, so no inline script is needed."""
+
+    template_name = "api/swagger_ui.html"

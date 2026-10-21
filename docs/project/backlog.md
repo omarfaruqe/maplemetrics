@@ -59,7 +59,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-03 | Set up and verify the daily cron refresh and backup job on the server | Must | S | Without it the data goes stale and the status page warns | Done (verified 2026-10-20: backups written on three consecutive mornings, refresh finished in 186 s, status `ok`) |
 | B-04 | Restore runbook: restore a backup into a clean database and record the steps and time taken | Must | M | A backup that has never been restored is an assumption | **Done 2026-10-18.** `deploy/restore-test.sh` restored a real backup into a scratch database on the server and the counts matched (`PASS`). Procedure in the operations guide |
 | B-05 | HTTPS with a domain name and certificate | Should | M | Needed before anything beyond public data is hosted; settings already support it | Waiting on a domain |
-| B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Open |
+| B-06 | Serve Swagger UI from the project (no CDN) and tighten the docs-page policy | Should | S | Removes the last outside dependency at runtime | Done (2026-10-21; verified in a real browser) |
 | B-07 | Ingestion idempotency and revision tests against recorded real responses | Should | M | Protects the most important data-engineering promise | Done for idempotency and revisions (12 tests, 2026-10-21); real recorded samples moved to B-18 |
 | B-08 | Query-count and response-time tests for the main pages | Should | M | Catches slow pages before users do | Done (2026-10-21: query budgets, scale and time limits for 11 pages) |
 | B-09 | CSV download for any chart or table | Should | S | Most requested feature for an open-data tool | Done |

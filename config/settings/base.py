@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "drf_spectacular_sidecar",
     "apps.core",
     "apps.warehouse",
     "apps.ingestion",
@@ -160,4 +161,7 @@ SPECTACULAR_SETTINGS = {
     ),
     "VERSION": APP_VERSION,
     "SERVE_INCLUDE_SCHEMA": False,
+    # Swagger UI is served from this project's own static files, not from a CDN.
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
 }

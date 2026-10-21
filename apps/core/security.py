@@ -8,8 +8,10 @@ which is allowed by a per-request nonce, plus ``style`` attributes on chart elem
 Two areas need looser rules, and each gets its own policy:
 
 * ``/admin/`` is Django's admin, which relies on its own inline styles.
-* ``/api/v1/docs/`` is Swagger UI from drf-spectacular. It loads its script and styles from the
-  jsDelivr CDN and starts itself with an inline script.
+* ``/api/v1/docs/`` is Swagger UI from drf-spectacular. Its code and styles are served from this
+  project's own static files (the ``drf-spectacular-sidecar`` package), its start-up script is a
+  separate request, and its one inline ``<style>`` carries the nonce. Nothing comes from a CDN and
+  no inline script is allowed.
 """
 
 from __future__ import annotations
@@ -39,12 +41,12 @@ ADMIN_POLICY = (
 
 DOCS_POLICY = (
     "default-src 'none'; "
-    "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
-    "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
-    "img-src 'self' data: https://cdn.jsdelivr.net; "
-    "font-src 'self' data: https://cdn.jsdelivr.net; "
+    "script-src 'self'; "
+    "style-src 'self' 'nonce-{nonce}'; "
+    "style-src-attr 'unsafe-inline'; "
+    "img-src 'self' data:; "
+    "font-src 'self' data:; "
     "connect-src 'self'; "
-    "worker-src blob:; "
     "frame-ancestors 'none'; "
     "base-uri 'none'"
 )
@@ -57,7 +59,7 @@ def policy_for(path: str, nonce: str) -> str:
     if path.startswith("/admin/"):
         return ADMIN_POLICY
     if path.startswith("/api/v1/docs/"):
-        return DOCS_POLICY
+        return DOCS_POLICY.format(nonce=nonce)
     return SITE_POLICY.format(nonce=nonce)
 
 

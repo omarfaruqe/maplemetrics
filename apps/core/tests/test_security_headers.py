@@ -65,8 +65,9 @@ def test_api_responses_carry_the_policy_too(site):
 
 def test_docs_and_admin_have_their_own_looser_policies(site):
     docs = site.get(reverse("api:docs"))
-    assert docs["Content-Security-Policy"] == DOCS_POLICY
-    assert "https://cdn.jsdelivr.net" in directives(docs["Content-Security-Policy"])["script-src"]
+    nonce = re.search(r"'nonce-([^']+)'", docs["Content-Security-Policy"]).group(1)
+    assert docs["Content-Security-Policy"] == DOCS_POLICY.format(nonce=nonce)
+    assert f'<style nonce="{nonce}">' in docs.content.decode()
     admin = site.get("/admin/login/")
     assert admin["Content-Security-Policy"] == ADMIN_POLICY
 
@@ -74,4 +75,4 @@ def test_docs_and_admin_have_their_own_looser_policies(site):
 def test_policy_for_ignores_unknown_paths():
     assert "nonce-abc" in policy_for("/anything/", "abc")
     assert policy_for("/admin/x", "abc") == ADMIN_POLICY
-    assert policy_for("/api/v1/docs/", "abc") == DOCS_POLICY
+    assert policy_for("/api/v1/docs/", "abc") == DOCS_POLICY.format(nonce="abc")

@@ -95,3 +95,37 @@ def test_browser_reports_no_csp_violations_and_still_applies_styles(live_server,
             context.close()
         browser.close()
     assert not problems, "\n".join(problems)
+
+
+def test_api_docs_run_in_a_real_browser_from_this_site_alone(live_server, transactional_db):
+    """Swagger UI renders and can call the API under its strict policy, with no CDN involved."""
+    from django.urls import reverse
+
+    sync_api = pytest.importorskip("playwright.sync_api")
+    with sync_api.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        messages, requested = [], []
+        page.on("console", lambda msg: messages.append(msg.text))
+        page.on("pageerror", lambda error: messages.append(str(error)))
+        page.on("request", lambda request: requested.append(request.url))
+        page.goto(live_server.url + reverse("api:docs"))
+        page.wait_for_selector(".swagger-ui .opblock", timeout=15000)
+
+        assert page.locator(".opblock").count() >= 3
+        title_size = page.evaluate(
+            "getComputedStyle(document.querySelector('.swagger-ui .info .title')).fontSize"
+        )
+        assert title_size != "16px", "Swagger UI styles were blocked"
+
+        page.locator(".opblock-summary").first.click()
+        page.get_by_role("button", name="Try it out").first.click()
+        page.get_by_role("button", name="Execute").first.click()
+        page.wait_for_selector(".live-responses-table tbody .response-col_status")
+        status = page.locator(".live-responses-table tbody .response-col_status").first.inner_text()
+        assert status.strip().startswith("200")
+        browser.close()
+
+    assert [m for m in messages if "Content Security Policy" in m] == []
+    hosts = {url.split("/")[2] for url in requested if url.startswith("http")}
+    assert hosts == {live_server.url.split("/")[2]}, hosts
