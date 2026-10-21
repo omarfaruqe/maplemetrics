@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Backups
+- New `deploy/pull-backups.sh`, run on your Mac, copies the server's backups down over SSH so a
+  disk failure on the server no longer takes the only copies with it. It downloads only new files,
+  tests every archive, and fails loudly if the server cannot be reached, an archive is damaged,
+  there is nothing to copy, or the newest backup is more than two days old. Seven new tests run it
+  against a pretend `rsync`. `docs/operations.md` has the one-time SSH setup and a launch agent that
+  runs it daily at 09:00 and shows a notification on failure.
+
 ### API documentation
 - Swagger UI is now served from the project itself (new dependency `drf-spectacular-sidecar`)
   instead of the jsDelivr CDN. The docs page no longer needs any outside host, and its Content

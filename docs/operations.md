@@ -138,8 +138,70 @@ gunzip -c ~/backups/maplemetrics-DATE.sql.gz | docker compose -f docker-compose.
 docker compose -f docker-compose.yml -f docker-compose.server.yml start web
 ```
 
-Backups sit on the same disk as the database, so copy `~/backups` to another machine now and then;
-a disk failure would take both.
+### Keeping a copy off the server
+
+Backups on the server sit on the same disk as the database, so a disk failure would take both.
+`deploy/pull-backups.sh` runs **on your Mac** and copies the archives down over SSH. The Mac connects
+to the server, so the server holds no key to your copy.
+
+It downloads only files you do not have yet, tests every archive with `gzip -t`, and exits with an
+error (and says why) if the server cannot be reached, an archive is damaged, there is nothing to
+copy, or the newest backup is more than two days old, which means the server stopped making them.
+Copies older than 365 days are deleted.
+
+One-time setup on the Mac. It needs SSH to work without a password:
+
+```
+ssh -o BatchMode=yes faruqe@103.99.176.180 true && echo "ssh key works"
+```
+
+If that does not print `ssh key works`, create a key (skip the first line if `~/.ssh/id_ed25519`
+exists) and install it on the server:
+
+```
+ssh-keygen -t ed25519
+ssh-copy-id faruqe@103.99.176.180
+```
+
+Install the script outside Desktop and Documents, which macOS restricts for background jobs, and
+run it once by hand:
+
+```
+mkdir -p ~/.local/bin ~/Backups/maplemetrics
+cp deploy/pull-backups.sh ~/.local/bin/maplemetrics-pull-backups
+chmod +x ~/.local/bin/maplemetrics-pull-backups
+~/.local/bin/maplemetrics-pull-backups
+```
+
+A good run ends with `OK: N backups here, newest maplemetrics-DATE.sql.gz`. To run it every day at
+09:00 (after the server's 06:30 backup, which is 20:30 the evening before in Toronto), and show a
+notification if it fails, install a launch agent. If the Mac is asleep at 09:00, macOS runs the
+job when it wakes:
+
+```
+cat > ~/Library/LaunchAgents/ca.maplemetrics.pull-backups.plist <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>ca.maplemetrics.pull-backups</string>
+<key>ProgramArguments</key><array><string>/bin/bash</string><string>-c</string><string>$HOME/.local/bin/maplemetrics-pull-backups || osascript -e 'display notification "Backup copy failed" with title "MapleMetrics"'</string></array>
+<key>StartCalendarInterval</key><dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+<key>StandardOutPath</key><string>$HOME/Library/Logs/maplemetrics-pull-backups.log</string>
+<key>StandardErrorPath</key><string>$HOME/Library/Logs/maplemetrics-pull-backups.log</string>
+</dict></plist>
+PLIST
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ca.maplemetrics.pull-backups.plist
+launchctl kickstart gui/$(id -u)/ca.maplemetrics.pull-backups
+tail -n 3 ~/Library/Logs/maplemetrics-pull-backups.log
+```
+
+To stop it: `launchctl bootout gui/$(id -u)/ca.maplemetrics.pull-backups`. The copies are not
+encrypted by the script; keep them on a disk with FileVault on, because the database holds the
+Django admin password hashes.
+
+To restore from a copy on the Mac, send the file to the server first
+(`scp ~/Backups/maplemetrics/maplemetrics-DATE.sql.gz faruqe@103.99.176.180:backups/`), then follow
+the steps above.
 
 ## Not covered yet
 

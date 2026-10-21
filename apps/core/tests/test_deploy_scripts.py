@@ -15,6 +15,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[3]
 BACKUP = ROOT / "deploy" / "backup.sh"
 RESTORE = ROOT / "deploy" / "restore-test.sh"
+PULL = ROOT / "deploy" / "pull-backups.sh"
 
 pytestmark = pytest.mark.skipif(shutil.which("bash") is None, reason="bash is required")
 
@@ -65,7 +66,7 @@ def run(script, env, *args):
 
 
 def test_scripts_are_valid_bash():
-    for script in (BACKUP, RESTORE):
+    for script in (BACKUP, RESTORE, PULL):
         assert subprocess.run(["bash", "-n", str(script)]).returncode == 0
 
 
@@ -138,3 +139,109 @@ def test_scratch_database_is_removed_even_when_the_restore_fails(env):
     log = Path(env["MOCK_LOG"]).read_text()
     assert log.count("DROP DATABASE IF EXISTS restore_check") >= 2
     assert log.rstrip().splitlines()[-1].endswith("DROP DATABASE IF EXISTS restore_check")
+
+
+# A pretend rsync: copies matching files from a local folder standing in for the server.
+FAKE_RSYNC = """#!/bin/bash
+[ -n "${MOCK_RSYNC_FAIL:-}" ] && exit 23
+src="${@: -2:1}"
+dst="${@: -1:1}"
+src="${src#*:}"
+for f in "$MOCK_REMOTE"/maplemetrics-*.sql.gz; do
+  [ -e "$f" ] || continue
+  [ -e "$dst/$(basename "$f")" ] || cp -p "$f" "$dst/"
+  echo "$(basename "$f")" >> "$MOCK_LOG"
+done
+"""
+
+
+@pytest.fixture
+def pull_env(tmp_path):
+    (tmp_path / "bin").mkdir()
+    (tmp_path / "server").mkdir()
+    rsync = tmp_path / "bin" / "rsync"
+    rsync.write_text(FAKE_RSYNC)
+    rsync.chmod(0o755)
+    return {
+        **os.environ,
+        "PATH": f"{tmp_path / 'bin'}:{os.environ['PATH']}",
+        "MAPLE_LOCAL_DIR": str(tmp_path / "mac"),
+        "MOCK_REMOTE": str(tmp_path / "server"),
+        "MOCK_LOG": str(tmp_path / "rsync.log"),
+    }
+
+
+def server_backup(tmp_path, name, content=b"SELECT 1;\n", age_days=0):
+    import gzip
+    import time
+
+    path = tmp_path / "server" / name
+    path.write_bytes(gzip.compress(content))
+    when = time.time() - age_days * 86400
+    os.utime(path, (when, when))
+    return path
+
+
+def test_pull_copies_new_backups_and_reports_ok(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-20.sql.gz", age_days=1)
+    server_backup(tmp_path, "maplemetrics-2026-10-21.sql.gz")
+    result = run(PULL, pull_env)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert sorted(p.name for p in (tmp_path / "mac").iterdir()) == [
+        "maplemetrics-2026-10-20.sql.gz",
+        "maplemetrics-2026-10-21.sql.gz",
+    ]
+    assert "OK: 2 backups here, newest maplemetrics-2026-10-21.sql.gz" in result.stdout
+
+
+def test_pull_is_safe_to_repeat(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-21.sql.gz")
+    assert run(PULL, pull_env).returncode == 0
+    again = run(PULL, pull_env)
+    assert again.returncode == 0
+    assert len(list((tmp_path / "mac").iterdir())) == 1
+
+
+def test_pull_fails_when_the_server_cannot_be_reached(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-21.sql.gz")
+    result = run(PULL, {**pull_env, "MOCK_RSYNC_FAIL": "1"})
+    assert result.returncode == 1
+    assert "could not copy" in result.stdout
+
+
+def test_pull_fails_on_a_damaged_archive(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-21.sql.gz")
+    (tmp_path / "server" / "maplemetrics-2026-10-20.sql.gz").write_bytes(b"not gzip")
+    result = run(PULL, pull_env)
+    assert result.returncode == 1
+    assert "maplemetrics-2026-10-20.sql.gz is damaged" in result.stdout
+
+
+def test_pull_fails_when_the_server_stopped_making_backups(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-10.sql.gz", age_days=10)
+    result = run(PULL, pull_env)
+    assert result.returncode == 1
+    assert "more than two days old" in result.stdout
+
+
+def test_pull_fails_when_there_is_nothing_to_copy(pull_env):
+    result = run(PULL, pull_env)
+    assert result.returncode == 1
+    assert "no backups found" in result.stdout
+
+
+def test_pull_deletes_only_old_local_copies(pull_env, tmp_path):
+    server_backup(tmp_path, "maplemetrics-2026-10-21.sql.gz")
+    mac = tmp_path / "mac"
+    mac.mkdir()
+    old = mac / "maplemetrics-2025-01-01.sql.gz"
+    old.write_bytes(__import__("gzip").compress(b"x"))
+    long_ago = 1_700_000_000
+    os.utime(old, (long_ago, long_ago))
+    unrelated = mac / "notes.txt"
+    unrelated.write_text("keep me")
+    os.utime(unrelated, (long_ago, long_ago))
+    result = run(PULL, {**pull_env, "MAPLE_KEEP_DAYS": "30"})
+    assert result.returncode == 0, result.stdout
+    assert not old.exists()
+    assert unrelated.exists()

@@ -28,7 +28,7 @@ Last review: 2026-10-18.
 ## Reading the register
 
 - **High right now:** none. R-10 was closed on 2026-10-18.
-- **Open and not yet proven:** an external monitor for R-08 and the off-machine copy
+- **Open and not yet proven:** an external monitor for R-08 and confirmation that the off-machine copy (B-17) runs daily
   of backups under R-09. These are cheap to close, and they are what turns "designed" into
   "operated".
 - **Accepted on purpose:** R-07 and R-14, with the reason written next to them.

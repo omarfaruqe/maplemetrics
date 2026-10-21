@@ -70,7 +70,7 @@ Priority uses MoSCoW (Must, Should, Could). Effort is S (under an hour), M (a fe
 | B-14 | Container image vulnerability scan in CI | Could | S | Dependabot updates the base image but the built image is not scanned | Open |
 | B-15 | Usability test with screen-reader users | Could | M | Automated tools find only part of the problems | Open |
 | B-16 | Demo GIF and a short video walkthrough for the README | Could | S | Faster to review than screenshots | Open |
-| B-17 | Copy backups off the server automatically | Should | M | Backups sit on the same disk as the database, so a disk failure would lose both | Open |
+| B-17 | Copy backups off the server automatically | Should | M | Backups sit on the same disk as the database, so a disk failure would lose both | Built 2026-10-21 (`deploy/pull-backups.sh`, Mac pulls over SSH); done once the first real copy and the daily job are confirmed |
 | B-18 | Record real Statistics Canada and Bank of Canada responses as trimmed test fixtures | Could | S | The idempotency tests use files built to the real column layout; real samples would also catch format changes | Open |
 
 ## Prioritisation notes
